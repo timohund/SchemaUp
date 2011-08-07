@@ -29,14 +29,24 @@ class Domain_Database_Field implements Interface_SqlParser {
 	const DATATYPE_BIGINT		= 'bigint';
 	const DATATYPE_FLOAT		= 'float';
 	const DATATYPE_DECIMAL		= 'decimal';
-
-	const DATATYPE_TIMESTAMP	= 'timestamp';
 	const DATATYPE_DOUBLE		= 'double';
+	
+	const DATATYPE_TIMESTAMP	= 'timestamp';
+	const DATATYPE_DATE			= 'date';
+	const DATATYPE_DATETIME		= 'datetime';
 	
 	const DATATYPE_VARCHAR		= 'varchar';
 	
-	const DATATYPE_BLOB			= 'blob';
+	const DATATYPE_TINYBLOB		= 'tinyblob';
 	const DATATYPE_MEDIUMBLOB	= 'mediumblob';
+	const DATATYPE_BLOB			= 'blob';
+	const DATATYPE_LONGBLOB		= 'longblob';
+	
+	const DATATYPE_TINYTEXT		= 'tinytext';
+	const DATATYPE_MEDIUMTEXT	= 'mediumtext';
+	const DATATYPE_TEXT			= 'text';
+	const DATATYPE_LONGTEXT		= 'longtext';
+	
 	
 	protected $dataTypeAliases = array(
 		self::DATATYPE_BIT 			=> array('bit'),
@@ -48,10 +58,20 @@ class Domain_Database_Field implements Interface_SqlParser {
 		self::DATATYPE_BIGINT		=> array('bigint'),
 		self::DATATYPE_FLOAT		=> array('float'),
 		self::DATATYPE_DECIMAL		=> array('decimal','dec','numeric','fixed'),
-		self::DATATYPE_TIMESTAMP	=> array('timestamp'),
 		self::DATATYPE_DOUBLE		=> array('double','real','double precision'),
+		self::DATATYPE_TIMESTAMP	=> array('timestamp'),
+		self::DATATYPE_DATE			=> array('date'),
+		self::DATATYPE_DATETIME		=> array('datetime'),
 		self::DATATYPE_VARCHAR		=> array('varchar'),
+		self::DATATYPE_TINYBLOB		=> array('tinyblob'),
+		self::DATATYPE_MEDIUMBLOB	=> array('mediumblob'),
 		self::DATATYPE_BLOB			=> array('blob'),
+		self::DATATYPE_LONGBLOB		=> array('longblob'),
+		self::DATATYPE_TINYTEXT		=> array('tinytext'),
+		self::DATATYPE_MEDIUMTEXT	=> array('mediumtext'),
+		self::DATATYPE_TEXT			=> array('text'),
+		self::DATATYPE_LONGTEXT		=> array('longtext')
+		
 	);
 	
 	/**
@@ -226,6 +246,6 @@ class Domain_Database_Field implements Interface_SqlParser {
 			}
 		}
 		
-		throw new Exception_Parsin_ExtractDatatype('Unable to extract datatype from field definition: '.$this->sqlString);
+		throw new Exception_Parsing_ExtractDatatype('Unable to extract datatype from field definition: '.$this->sqlString);
 	}
 }

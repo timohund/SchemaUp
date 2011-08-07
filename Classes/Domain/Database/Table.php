@@ -66,6 +66,15 @@ class Domain_Database_Table implements Interface_SqlParser{
 	}
 	
 	/**
+	 * Returns the fields definitions from the table.
+	 * 
+	 * @return Domain_Database_FieldCollection
+	 */
+	public function getFields() {
+		return $this->fields;
+	}
+	
+	/**
 	 * Method to pass the sql string of this table.
 	 * 
 	 * @param string $sqlString
@@ -87,7 +96,7 @@ class Domain_Database_Table implements Interface_SqlParser{
 	public function parseSql() {
 		$matches 	= array();
 			//starts with CREATE TABLE `tablename` ( fielddefinition) 
-		$count 		= preg_match("~^CREATE[[:space:]]+TABLE[[:space:]]+`(?<tablename>[^`]*)`[[:space:]]+\((?<fielddefinitions>.*)\)~ims",$this->sqlString, $matches);
+		$count 		= preg_match("~^[[:space:]]*CREATE[[:space:]]+TABLE[[:space:]]+`(?<tablename>[^`]*)`[[:space:]]+\((?<fielddefinitions>.*)\)~ims",$this->sqlString, $matches);
 		
 		if($count === 1 && is_array($matches) && array_key_exists('tablename',$matches) && array_key_exists('fielddefinitions',$matches)) {
 			$this->table = trim($matches['tablename']);
