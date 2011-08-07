@@ -1,5 +1,12 @@
 <?php
 
-class Domain_Database_Statements implements Interface_SqlCreater {
+class Domain_Database_Statement implements Interface_SqlCreater {
 	
+	/**
+	 * 
+	 * @return string
+	 */
+	public function getSql() {
+		
+	}
 }
