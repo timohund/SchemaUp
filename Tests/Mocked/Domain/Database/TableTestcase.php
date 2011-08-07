@@ -38,7 +38,7 @@ class Mocked_Domain_Database_TableTestcase extends Mocked_AbstractMockedTestcase
 	 */
 	public function getFieldsDataProvider() {
 		return array(
-	/*		array(
+			array(
 					//magento widget table
 				'createTableSchema' => 
 					"CREATE TABLE `widget` (
@@ -93,7 +93,7 @@ class Mocked_Domain_Database_TableTestcase extends Mocked_AbstractMockedTestcase
 					  KEY `tx_realurl` (`domainName`,`hidden`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 ",
 				"expectedNumberOfFields" => 12
-			) */
+			), 
 			array(
 				'createTableSchema' => "
 					CREATE TABLE `coupon_aggregated` (
@@ -102,8 +102,7 @@ class Mocked_Domain_Database_TableTestcase extends Mocked_AbstractMockedTestcase
 					) ENGINE=InnoDB DEFAULT CHARSET=utf8				
 				",
 				"expectedNumberOfFields" => 1
-			),
-		
+			)
 		);
 	}
 	
