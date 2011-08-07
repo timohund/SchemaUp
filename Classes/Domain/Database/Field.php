@@ -259,7 +259,9 @@ class Domain_Database_Field implements Interface_SqlParser {
 		foreach ($this->dataTypeAliases as $dataType => $aliases) {
 			foreach($aliases as $alias) {
 				$matches = array();
-				if(preg_match('~`[^`]*`.*'.$alias.'(\((?<size>[1-9][0-9]*)\))?.*~ims',$this->sqlString,$matches) === 1) {
+				
+				// `FIELDNAME` DATATYPE(SIZE,PRECISION[options]) followed by at least one space or line end 
+				if(preg_match('~`[^`]*`.*'.$alias.'(\((?<size>[1-9][0-9]*)(,(?<precision>[1-9][0-9]*))?\))?([[:space:]]+.*|$)~ims',$this->sqlString,$matches) === 1) {
 					$this->setDatatype($dataType);
 					$this->setDatatypeAlias($alias);
 					

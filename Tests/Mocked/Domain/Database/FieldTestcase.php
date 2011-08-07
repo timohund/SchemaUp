@@ -98,4 +98,41 @@ class Mocked_Domain_Database_FieldTestcase extends Mocked_AbstractMockedTestcase
 		$currentFieldName = $this->field->setSql($createFieldSql)->getFieldname();
 		$this->assertEquals($currentFieldName, $expectedFieldName, 'Retrieved unexpected fieldname from parsed field query');
 	}
+	
+	/**
+	 * Dataprovider with testdata to check if the dataType gets extracted as expected.
+	 * 
+	 * @return array
+	 */
+	public function getDataTypeDataProvider() {
+		return array(
+			array(
+				'createFieldSql' => '`id` int(11) unsigned NOT NULL',
+				'expectedDataType' => Domain_Database_Field::DATATYPE_INT,
+				'expectedDataTypeAlias' => 'int'
+			),
+			array(
+				'createFieldSql' => '`id` integer(11) unsigned NOT NULL',
+				'expectedDataType' => Domain_Database_Field::DATATYPE_INT,
+				'expectedDataTypeAlias' => 'integer'
+			),
+		);
+	}
+	
+	/**
+	 * Testcase to check if the dataType of a field gets determined as expected.
+	 * 
+	 * @param string $createFieldSql
+	 * @param string $expectedDataType
+	 * @param string $expectedDataTypeAlias
+	 * @test
+	 * @dataProvider getDataTypeDataProvider
+	 */
+	public function getDataType($createFieldSql, $expectedDataType, $expectedDataTypeAlias) {
+		$currentDataType 		= $this->field->setSql($createFieldSql)->getDataType();
+		$currentDataTypeAlias	= $this->field->getDataTypeAlias();
+		
+		$this->assertEquals($currentDataType, $expectedDataType, 'Field determined unexpected data type');
+		$this->assertEquals($currentDataTypeAlias, $expectedDataTypeAlias, 'Field determined unexpected data type alias');
+	}
 }

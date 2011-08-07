@@ -106,7 +106,8 @@ class Domain_Database_Table implements Interface_SqlParser{
 			if($fielddefinitions != '') {
 					//the single fields are seperated by , that should not have a ` prepended because this
 					//is used for seperation in key definitions
-				$lines = preg_split('~(?<fielddefinition>(?<!`))[[:space:]]*,~ims',$fielddefinitions) ;
+				$noPrecisionCommaLookBehind = '(?<!\([1-9])(?<!\([1-9][0-9])(?<!\([1-9][0-9][0-9])(?<!\([1-9][0-9][0-9][0-9])';	
+				$lines = preg_split('~(?<fielddefinition>(?<!`))[[:space:]]*'.$noPrecisionCommaLookBehind.',~ims',$fielddefinitions) ;
 				foreach($lines as $line) {
 					$line = trim($line);
 					//we have a field line when the line starts with `

@@ -38,7 +38,7 @@ class Mocked_Domain_Database_TableTestcase extends Mocked_AbstractMockedTestcase
 	 */
 	public function getFieldsDataProvider() {
 		return array(
-			array(
+	/*		array(
 					//magento widget table
 				'createTableSchema' => 
 					"CREATE TABLE `widget` (
@@ -50,7 +50,7 @@ class Mocked_Domain_Database_TableTestcase extends Mocked_AbstractMockedTestcase
 						  KEY `IDX_CODE` (`code`)
 					) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Preconfigured Widgets' ",
 				'expectedNumberOfFields' => 4
-			),
+			), 
 			array(
 				'createTableSchema' => "
 					CREATE TABLE `coupon_aggregated` (
@@ -93,7 +93,17 @@ class Mocked_Domain_Database_TableTestcase extends Mocked_AbstractMockedTestcase
 					  KEY `tx_realurl` (`domainName`,`hidden`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 ",
 				"expectedNumberOfFields" => 12
-			)
+			) */
+			array(
+				'createTableSchema' => "
+					CREATE TABLE `coupon_aggregated` (
+						  `subtotal_amount` decimal(12,4) NOT NULL DEFAULT '0.0000',
+						  CONSTRAINT `FK_SALESTRULE_COUPON_AGGREGATED_STORE` FOREIGN KEY (`store_id`) REFERENCES `core_store` (`store_id`) ON DELETE CASCADE ON UPDATE CASCADE
+					) ENGINE=InnoDB DEFAULT CHARSET=utf8				
+				",
+				"expectedNumberOfFields" => 1
+			),
+		
 		);
 	}
 	
