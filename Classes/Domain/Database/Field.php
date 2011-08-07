@@ -95,9 +95,15 @@ class Domain_Database_Field implements Interface_SqlParser {
 	protected $dataTypeAlias = '';
 	
 	/**
-	 * @var int
+	 * @var $size int
 	 */
 	protected $size = null;
+	
+	/**
+	 * @var $autoIncrement boolean indicates if the field is an auto increment field or not
+	 */
+	protected $autoIncrement = false;
+	
 	
 	/**
 	 * Method to set the name of the database field.
@@ -181,13 +187,34 @@ class Domain_Database_Field implements Interface_SqlParser {
 	}
 	
 	/**
+	 * Method to set if wether the field is an auto increment field or not.
+	 * 
+	 * @param boolean $bool
+	 */
+	public function setAutoIncrement($bool = true) {
+		$this->autoIncrement = $bool;
+	}
+	
+	/**
+	 * Method that retrieve of the field is an auto increment field or not.
+	 * 
+	 * @return boolean
+	 */
+	public function getAutoIncrement() {
+		return $this->autoIncrement;
+	}
+	
+	/**
 	 * Method to set the sql string of the field.
 	 * 
 	 * @param string $sqlString
+	 * @return Domain_Database_Field
 	 */
 	public function setSql($sqlString) {
 		$this->sqlString = $sqlString;
 		$this->parseSql();
+		
+		return $this;
 	}
 
 	/**
@@ -196,7 +223,7 @@ class Domain_Database_Field implements Interface_SqlParser {
 	 * @return bool
 	 */
 	public function parseSql() {
-		$this->extractFieldname()->extractDatatype();
+		$this->extractFieldname()->extractDatatype()->extractAutoIncrement();
 	}
 
 	/**
@@ -208,7 +235,7 @@ class Domain_Database_Field implements Interface_SqlParser {
 		$matches = array();
 		
 			//`<fieldname>` ...
-		if(preg_match('~^`(?<fieldname>[^`]*)`.*~is',$this->sqlString,$matches) == 1) {
+		if(preg_match('~^[[:space:]]*`(?<fieldname>[^`]*)`.*~is',$this->sqlString,$matches) === 1) {
 			if(is_array($matches) && array_key_exists('fieldname',$matches)) {
 				$fieldName = $matches['fieldname'];
 
@@ -232,7 +259,7 @@ class Domain_Database_Field implements Interface_SqlParser {
 		foreach ($this->dataTypeAliases as $dataType => $aliases) {
 			foreach($aliases as $alias) {
 				$matches = array();
-				if(preg_match('~`[^`]*`.*'.$alias.'(\((?<size>[1-9][0-9]*)\))?.*~ims',$this->sqlString,$matches) == 1) {
+				if(preg_match('~`[^`]*`.*'.$alias.'(\((?<size>[1-9][0-9]*)\))?.*~ims',$this->sqlString,$matches) === 1) {
 					$this->setDatatype($dataType);
 					$this->setDatatypeAlias($alias);
 					
@@ -247,5 +274,18 @@ class Domain_Database_Field implements Interface_SqlParser {
 		}
 		
 		throw new Exception_Parsing_ExtractDatatype('Unable to extract datatype from field definition: '.$this->sqlString);
+	}
+	
+	/**
+	 * Extracts if the field is an AUTO INCREMENT field
+	 * and set sets the auto increment flag if needed.
+	 * 
+	 * @return Domain_Database_Field
+	 */
+	protected function extractAutoIncrement() {
+		if(preg_match('~.*AUTO_INCREMENT.*~ims', $this->sqlString) === 1) {
+			$this->setAutoIncrement(true);
+		}
+		return $this;
 	}
 }
