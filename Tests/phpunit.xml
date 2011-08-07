@@ -1,0 +1,17 @@
+<phpunit bootstrap="phpunit.bootstrap.php" colors="true" backupGlobals="false"
+	backupStaticAttributes="false" syntaxCheck="false" stopOnFailure="false"
+	convertErrorsToExceptions="true" convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true">
+	<testsuite name="All">
+		<directory suffix="Testcase.php">./</directory>
+	</testsuite>
+	<php>
+		<ini name="memory_limit" value="50000M" />
+		<ini name="max_execution_time" value="50000" />
+	</php>
+	<filter>
+		<whitelist addUncoveredFilesFromWhitelist="true">
+			<directory suffix=".php">../Classes</directory>
+		</whitelist>
+	</filter>	
+</phpunit>
