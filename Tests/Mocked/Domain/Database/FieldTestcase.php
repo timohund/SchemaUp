@@ -62,4 +62,40 @@ class Mocked_Domain_Database_FieldTestcase extends Mocked_AbstractMockedTestcase
 		$assertMessage = 'Field has unexpected getAutoIncrement state: '.var_export($currentAutoIncrementState, true);
 		$this->assertEquals($currentAutoIncrementState,$expectIsAutoIncrement,$assertMessage);
 	}
+	
+	/**
+	 * Returns a array with field queries and expected fieldname.
+	 * 
+	 * @return array
+	 */
+	public function getFieldNameDataProvider() {
+		return array(
+			array(
+				'createFieldSql' => '`id` int(11) unsigned NOT NULL',
+				'expectedFieldName' => 'id',
+			),
+			array(
+				'createFieldSql' => "	`period` date NOT NULL DEFAULT '0000-00-00'",
+				'expectedFieldName' => 'period',
+			),
+			array(
+				'createFieldSql' => " `redirectHttpStatusCode` int(4) unsigned NOT NULL DEFAULT '301'",
+				'expectedFieldName' => "redirectHttpStatusCode"
+			)
+			
+		);
+	}
+	
+	/**
+	 * Testcase to check if the fieldName can be extracted as expected.
+	 * 
+	 * @param string $createFieldSql
+	 * @param string $expectedFieldName
+	 * @test
+	 * @dataProvider getFieldNameDataProvider
+	 */
+	public function getFieldName($createFieldSql, $expectedFieldName) {
+		$currentFieldName = $this->field->setSql($createFieldSql)->getFieldname();
+		$this->assertEquals($currentFieldName, $expectedFieldName, 'Retrieved unexpected fieldname from parsed field query');
+	}
 }

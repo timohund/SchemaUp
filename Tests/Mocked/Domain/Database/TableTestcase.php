@@ -5,7 +5,6 @@
 *  (c) 2011 Timo Schmidt <timo-schmidt@gmx.net>
 *  All rights reserved
 *
-*
 *  This copyright notice MUST APPEAR in all copies of the script!
 ****************************************************************/
 
@@ -74,16 +73,50 @@ class Mocked_Domain_Database_TableTestcase extends Mocked_AbstractMockedTestcase
 					) ENGINE=InnoDB DEFAULT CHARSET=utf8				
 				",
 				"expectedNumberOfFields" => 12
+			),
+			array(
+				'createTableSchema' => "CREATE TABLE `sys_domain` (
+ 					 `uid` int(11) unsigned NOT NULL AUTO_INCREMENT,
+					  `pid` int(11) unsigned NOT NULL DEFAULT '0',
+					  `tstamp` int(11) unsigned NOT NULL DEFAULT '0',
+					  `crdate` int(11) unsigned NOT NULL DEFAULT '0',
+					  `cruser_id` int(11) unsigned NOT NULL DEFAULT '0',
+					  `hidden` tinyint(4) unsigned NOT NULL DEFAULT '0',
+					  `domainName` varchar(80) NOT NULL,
+					  `redirectTo` varchar(120) NOT NULL,
+					  `redirectHttpStatusCode` int(4) unsigned NOT NULL DEFAULT '301',
+					  `sorting` int(10) unsigned NOT NULL DEFAULT '0',
+					  `prepend_params` int(10) NOT NULL DEFAULT '0',
+					  `forced` tinyint(3) unsigned NOT NULL DEFAULT '0',
+					  PRIMARY KEY (`uid`),
+					  KEY `parent` (`pid`),
+					  KEY `tx_realurl` (`domainName`,`hidden`)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 ",
+				"expectedNumberOfFields" => 12
 			)
 		);
 	}
 	
 	/**
+	 * Testcase to check if a field collection with the expected number of fields
+	 * get retrieved.
 	 * 
 	 * @dataProvider getFieldsDataProvider
 	 * @test
 	 */
 	public function getFields($createTableSql, $expectedNumberOfFields) {
 		$this->assertEquals($this->table->setSql($createTableSql)->getFields()->count(),$expectedNumberOfFields);
+	}
+	
+	/**
+	 * This testcase is used to test if the table class throws an exception when
+	 * an INSERT INTO statement instead of an CREATE TABLE statement gets passed.
+	 * 
+	 * @test
+	 * @expectedException Exception_Parsing_CreateTable
+	 */
+	public function thowsExceptionForInsertStatement() {
+		$statement = "INSERT INTO `app_de_commandlog` VALUES (4438)";
+		$this->table->setSql($statement);
 	}
 }
