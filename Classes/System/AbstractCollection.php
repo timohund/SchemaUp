@@ -26,6 +26,7 @@ class System_AbstractCollection extends ArrayObject {
 	public function add($object) {
 		$this->append($object);
 	}
+
 	
 	/**
 	 * Returns the number of items in the collection.

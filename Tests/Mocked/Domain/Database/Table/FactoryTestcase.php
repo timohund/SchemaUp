@@ -18,15 +18,15 @@
 class Mocked_Domain_Database_TableTestcase extends Mocked_AbstractMockedTestcase {
 	
 	/**
-	 * @var $table Domain_Database_Table
+	 * @var $table Domain_Database_Table_Factory
 	 */
-	protected $table;
+	protected $factory;
 	
 	/**
 	 * @return void
 	 */
 	public function setUp() {
-		$this->table = new Domain_Database_Table();
+		$this->factory = new Domain_Database_Table_Factory();
 	}
 	
 	/**
@@ -36,7 +36,7 @@ class Mocked_Domain_Database_TableTestcase extends Mocked_AbstractMockedTestcase
 	 * 
 	 * @return array
 	 */
-	public function getFieldsDataProvider() {
+	public function extractFieldsDataProvider() {
 		return array(
 			array(
 					//magento widget table
@@ -110,11 +110,12 @@ class Mocked_Domain_Database_TableTestcase extends Mocked_AbstractMockedTestcase
 	 * Testcase to check if a field collection with the expected number of fields
 	 * get retrieved.
 	 * 
-	 * @dataProvider getFieldsDataProvider
+	 * @dataProvider extractFieldsDataProvider
 	 * @test
 	 */
 	public function getFields($createTableSql, $expectedNumberOfFields) {
-		$this->assertEquals($this->table->setSql($createTableSql)->getFields()->count(),$expectedNumberOfFields);
+		$table = $this->factory->createFromSql($createTableSql);	
+		$this->assertEquals($table->getFields()->count(),$expectedNumberOfFields);
 	}
 	
 	/**
@@ -125,7 +126,7 @@ class Mocked_Domain_Database_TableTestcase extends Mocked_AbstractMockedTestcase
 	 * @expectedException Exception_Parsing_CreateTable
 	 */
 	public function thowsExceptionForInsertStatement() {
-		$statement = "INSERT INTO `app_de_commandlog` VALUES (4438)";
-		$this->table->setSql($statement);
+		$statement	= "INSERT INTO `app_de_commandlog` VALUES (4438)";
+		$table		= $this->factory->createFromSql($statement);
 	}
 }

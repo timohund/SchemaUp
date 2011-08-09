@@ -10,82 +10,45 @@
 ****************************************************************/
 
 /**
- * Domain object that represents a database table.
+ * Factory class to create a table object.
  * 
  * @package SchemaUp
- * @subpackage Classes\System
+ * @subpackage Classes\Domain\Table
  * @author Timo Schmidt <timo-schmidt@gmx.net>
  */
-class Domain_Database_Table implements Interface_SqlParser{
-	
-	const PREFIX_KEY = 'KEY';
-	
-	const PREFIX_PRIMARY_KEY = 'PRIMARY_KEY';
-	
+class Domain_Database_Table_Factory extends Domain_Database_AbstractSqlParsingFactory {
 	
 	/**
-	 * @var string $name the name of the table
-	 */
-	protected $name;
-	
-	/**
-	 * @var string
+	 * @var string $sqlString
 	 */
 	protected $sqlString;
 	
 	/**
-	 * @var Domain_Database_FieldCollection
+	 * @var Domain_Database_Field_Factory
 	 */
-	protected $fields;
+	protected $fieldFactory;
 	
 	/**
-	 * Constructor.
+	 * Constructor
 	 * 
 	 * @return void
 	 */
 	public function __construct() {
-		$this->fields = new Domain_Database_FieldCollection();
+		$this->fieldFactory = new Domain_Database_Field_Factory();
 	}
 	
 	/**
-	 * Public method to set the name of the table.
-	 * 
-	 * @param string $name
-	 */
-	public function setName($name) {
-		$this->name = $name;
-	}
-	
-	/**
-	 * Public method to retrieve the name of the table.
-	 * 
-	 * @return string
-	 */
-	public function getName() {
-		return $this->name;
-	}
-	
-	/**
-	 * Returns the fields definitions from the table.
-	 * 
-	 * @return Domain_Database_FieldCollection
-	 */
-	public function getFields() {
-		return $this->fields;
-	}
-	
-	/**
-	 * Method to pass the sql string of this table.
+	 * Creates a table object from a create table string.
 	 * 
 	 * @param string $sqlString
-	 * @return Domain_Database_Table
+	 * @return Domain_Database_Table_Table
 	 */
-	public function setSql($sqlString) {
+	public function createFromSql($sqlString) {
 		$this->sqlString = $sqlString;
-
-		$this->parseSql();
 		
-		return $this;
+		$table = $this->parseSql();
+		
+		return $table;
 	}
 	
 	/**
@@ -93,13 +56,30 @@ class Domain_Database_Table implements Interface_SqlParser{
 	 * 
 	 * @return boolean
 	 */
-	public function parseSql() {
+	protected function parseSql() {
+		$table = new Domain_Database_Table_Table();
+		
+		$this->extractTablenameAndFielddefinitions($table);
+		
+		return $table;
+	}
+	
+	/**
+	 * Extracts the tablename and the field definitions
+	 * from the CREATE TABLE statement.
+	 * 
+	 * @param Domain_Database_Table_Table $table
+	 * @return Domain_Database_Table_Factory 
+	 */
+	protected function extractTablenameAndFielddefinitions(Domain_Database_Table_Table $table) {
 		$matches 	= array();
-			//starts with CREATE TABLE `tablename` ( fielddefinition) 
+
+		//starts with CREATE TABLE `tablename` ( fielddefinition) 
 		$count 		= preg_match("~^[[:space:]]*CREATE[[:space:]]+TABLE[[:space:]]+`(?<tablename>[^`]*)`[[:space:]]+\((?<fielddefinitions>.*)\)~ims",$this->sqlString, $matches);
 		
 		if($count === 1 && is_array($matches) && array_key_exists('tablename',$matches) && array_key_exists('fielddefinitions',$matches)) {
-			$this->table = trim($matches['tablename']);
+			$tablename = trim($matches['tablename']);
+			$table->setName($tablename);
 			
 			$fielddefinitions = trim($matches['fielddefinitions']);
 
@@ -112,16 +92,16 @@ class Domain_Database_Table implements Interface_SqlParser{
 					$line = trim($line);
 					//we have a field line when the line starts with `
 					if(preg_match('~^`.*$~',$line) == 1) {
-						$field = new Domain_Database_Field();
-						$field->setSql(trim($line));
-						$this->fields->add($field);
+						$field = $this->fieldFactory->createFromSql($line);
+						$table->addField($field);
 					}
 				}
 			}
 			
 		} else {
 			throw new Exception_Parsing_CreateTable('Error during parsing of create table statement: '.$this->sqlString);
-		}
-	}
-	
+		}		
+		
+		return $this;
+	}	
 }

@@ -18,7 +18,7 @@
  * @subpackage Classes\Domain
  * @author Timo Schmidt <timo-schmidt@gmx.net>
  */
-class Domain_Database_SchemaMigrator{
+class Domain_Database_Schema_Migrator{
 	
 	/**
 	 * @var Domain_Database_Schema
@@ -36,7 +36,7 @@ class Domain_Database_SchemaMigrator{
 	 * @return void
 	 */
 	public function __construct() {
-		$this->migrationStatements = new Domain_Database_StatementCollection();
+		$this->migrationStatements = new Domain_Database_Statement_Collection();
 	}
 	
 	/**
@@ -77,6 +77,7 @@ class Domain_Database_SchemaMigrator{
 				foreach($targetTable->getFields() as $targetField) {
 					if($sourceTable->hasField($targetField)) {
 						//check datatype collation etc and add statements to change them if needed
+						echo $targetField->getName()."\n";
 					} else {
 						//new field apped field creation for table
 					}

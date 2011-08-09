@@ -10,24 +10,25 @@
 ****************************************************************/
 
 /**
- * Testcase to test the functionallity of the schema class
+ * Testcase to test if the field factory can create a  field object from the sql field
+ * definition.
  * 
  * @package SchemaUp
  * @subpackage Tests\Mocked\Domain\Database
  * @author Timo Schmidt <timo-schmidt@gmx.net>
  */
-class Mocked_Domain_Database_FieldTestcase extends Mocked_AbstractMockedTestcase {
+class Mocked_Domain_Database_Field_FactoryTestcase extends Mocked_AbstractMockedTestcase {
 	
 	/**
-	 * @var $field Domain_Database_Field
+	 * @var $factory Domain_Database_Field_Factory
 	 */
-	protected $field;
+	protected $factory;
 	
 	/**
 	 * @return void
 	 */
 	public function setUp() {
-		$this->field = new Domain_Database_Field();
+		$this->factory = new Domain_Database_Field_Factory();
 	}
 	
 	/**
@@ -35,7 +36,7 @@ class Mocked_Domain_Database_FieldTestcase extends Mocked_AbstractMockedTestcase
 	 * 
 	 * @return array
 	 */
-	public function getAutoIncrementDataProvider() {
+	public function extractAutoIncrementDataProvider() {
 		return array(
 			array( 	
 				'createFieldSql' => ' 	`id` int(11) unsigned NOT NULL',
@@ -54,10 +55,11 @@ class Mocked_Domain_Database_FieldTestcase extends Mocked_AbstractMockedTestcase
 	 * @param string $createFieldSql
 	 * @param boolean $expectIsAutoIncrement
 	 * @test
-	 * @dataProvider getAutoIncrementDataProvider
+	 * @dataProvider extractAutoIncrementDataProvider
 	 */
-	public function getAutoIncrement($createFieldSql, $expectIsAutoIncrement) {
-		$currentAutoIncrementState = $this->field->setSql($createFieldSql)->getAutoIncrement();
+	public function extractAutoIncrement($createFieldSql, $expectIsAutoIncrement) {
+		$field = $this->factory->createFromSql($createFieldSql);
+		$currentAutoIncrementState = $field->getAutoIncrement();
 
 		$assertMessage = 'Field has unexpected getAutoIncrement state: '.var_export($currentAutoIncrementState, true);
 		$this->assertEquals($currentAutoIncrementState,$expectIsAutoIncrement,$assertMessage);
@@ -68,7 +70,7 @@ class Mocked_Domain_Database_FieldTestcase extends Mocked_AbstractMockedTestcase
 	 * 
 	 * @return array
 	 */
-	public function getFieldNameDataProvider() {
+	public function extractNameDataProvider() {
 		return array(
 			array(
 				'createFieldSql' => '`id` int(11) unsigned NOT NULL',
@@ -92,10 +94,10 @@ class Mocked_Domain_Database_FieldTestcase extends Mocked_AbstractMockedTestcase
 	 * @param string $createFieldSql
 	 * @param string $expectedFieldName
 	 * @test
-	 * @dataProvider getFieldNameDataProvider
+	 * @dataProvider extractNameDataProvider
 	 */
-	public function getFieldName($createFieldSql, $expectedFieldName) {
-		$currentFieldName = $this->field->setSql($createFieldSql)->getFieldname();
+	public function extractNameTest($createFieldSql, $expectedFieldName) {
+		$currentFieldName = $this->factory->createFromSql($createFieldSql)->getName();
 		$this->assertEquals($currentFieldName, $expectedFieldName, 'Retrieved unexpected fieldname from parsed field query');
 	}
 	
@@ -104,16 +106,16 @@ class Mocked_Domain_Database_FieldTestcase extends Mocked_AbstractMockedTestcase
 	 * 
 	 * @return array
 	 */
-	public function getDataTypeDataProvider() {
+	public function extractDataTypeDataProvider() {
 		return array(
 			array(
 				'createFieldSql' => '`id` int(11) unsigned NOT NULL',
-				'expectedDataType' => Domain_Database_Field::DATATYPE_INT,
+				'expectedDataType' => Domain_Database_Field_Factory::DATATYPE_INT,
 				'expectedDataTypeAlias' => 'int'
 			),
 			array(
 				'createFieldSql' => '`id` integer(11) unsigned NOT NULL',
-				'expectedDataType' => Domain_Database_Field::DATATYPE_INT,
+				'expectedDataType' => Domain_Database_Field_Factory::DATATYPE_INT,
 				'expectedDataTypeAlias' => 'integer'
 			),
 		);
@@ -126,13 +128,15 @@ class Mocked_Domain_Database_FieldTestcase extends Mocked_AbstractMockedTestcase
 	 * @param string $expectedDataType
 	 * @param string $expectedDataTypeAlias
 	 * @test
-	 * @dataProvider getDataTypeDataProvider
+	 * @dataProvider extractDataTypeDataProvider
 	 */
-	public function getDataType($createFieldSql, $expectedDataType, $expectedDataTypeAlias) {
-		$currentDataType 		= $this->field->setSql($createFieldSql)->getDataType();
-		$currentDataTypeAlias	= $this->field->getDataTypeAlias();
+	public function extractDataType($createFieldSql, $expectedDataType, $expectedDataTypeAlias) {
+		$field					= $this->factory->createFromSql($createFieldSql);
 		
-		$this->assertEquals($currentDataType, $expectedDataType, 'Field determined unexpected data type');
-		$this->assertEquals($currentDataTypeAlias, $expectedDataTypeAlias, 'Field determined unexpected data type alias');
+		$currentDataType		= $field->getDataType();
+		$currentDataTypeAlias	= $field->getDataTypeAlias();
+		
+		$this->assertEquals($currentDataType, $expectedDataType, 'Factory determined unexpected data type');
+		$this->assertEquals($currentDataTypeAlias, $expectedDataTypeAlias, 'Factory determined unexpected data type alias');
 	}
 }

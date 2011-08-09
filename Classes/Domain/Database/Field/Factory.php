@@ -10,14 +10,13 @@
 ****************************************************************/
 
 /**
- * Class to represent a database field.
+ * Factory class to create a field object from the sql field definition.
  * 
  * @package SchemaUp
- * @subpackage Classes\Domain
+ * @subpackage Classes\Domain\Database\Field
  * @author Timo Schmidt <timo-schmidt@gmx.net>
  */
-class Domain_Database_Field implements Interface_SqlParser {
-
+class Domain_Database_Field_Factory extends Domain_Database_AbstractSqlParsingFactory{
 	const DATATYPE_BIT			= 'bit';
 	
 	const DATATYPE_BOOL			= 'bool';
@@ -73,165 +72,45 @@ class Domain_Database_Field implements Interface_SqlParser {
 		self::DATATYPE_LONGTEXT		=> array('longtext')
 		
 	);
-	
+		
 	/**
-	 * @var $sqlString string holds the sql string passed by setSql
+	 * @var string
 	 */
-	protected $sqlString 	= '';
+	protected $sqlString;
 	
 	/**
-	 * @var $fieldName string
-	 */
-	protected $fieldName	= '';
-
-	/**
-	 * @var $dataType = string
-	 */
-	protected $dataType = '';
-	
-	/**
-	 * @var $dataTypeAlias string
-	 */
-	protected $dataTypeAlias = '';
-	
-	/**
-	 * @var $size int
-	 */
-	protected $size = null;
-	
-	/**
-	 * @var $autoIncrement boolean indicates if the field is an auto increment field or not
-	 */
-	protected $autoIncrement = false;
-	
-	
-	/**
-	 * Method to set the name of the database field.
-	 * 
-	 * @param string $fieldName
-	 */
-	public function setFieldname($fieldName) {
-		$this->fieldName = $fieldName;
-	}
-	
-	/**
-	 * Returns the fieldname of the database field.
-	 * 
-	 * @return string
-	 */
-	public function getFieldname() {
-		return $this->fieldName;
-	}
-	
-	/**
-	 * Datatype of the field.
-	 * 
-	 * @param string $string
-	 */
-	public function setDatatype($dataType) {
-		$this->dataType = $dataType;
-	}
-	
-	/**
-	 * Returns the datatype of the field.
-	 * 
-	 * @return string
-	 */
-	public function getDatatype() {
-		return $this->dataType;
-	}
-	
-	/**
-	 * The used alias of the data type.
-	 * 
-	 * @param string $dataTypeAlias
-	 */
-	public function setDatatypeAlias($dataTypeAlias) {
-		$this->dataTypeAlias = $dataTypeAlias;
-	}
-	
-	/**
-	 * Returns the alias of a data type.
-	 * 
-	 * @return string
-	 */
-	public function getDatatypeAlias() {
-		return $this->dataTypeAlias;
-	}
-	
-	/**
-	 * Method to set the size of the database field.
-	 * 
-	 * @param int $size
-	 */
-	public function setSize($size) {
-		$this->size = $size;
-	}
-	
-	/**
-	 * Returns the size of the database field.
-	 * 
-	 * @return int
-	 */
-	public function getSize() {
-		return $this->size;
-	}
-	
-	/**
-	 * Returns if the field has a size definition (size is not null)
-	 * 
-	 * @return boolean
-	 */
-	public function hasSize() {
-		return $this->getSize() !== null;
-	}
-	
-	/**
-	 * Method to set if wether the field is an auto increment field or not.
-	 * 
-	 * @param boolean $bool
-	 */
-	public function setAutoIncrement($bool = true) {
-		$this->autoIncrement = $bool;
-	}
-	
-	/**
-	 * Method that retrieve of the field is an auto increment field or not.
-	 * 
-	 * @return boolean
-	 */
-	public function getAutoIncrement() {
-		return $this->autoIncrement;
-	}
-	
-	/**
-	 * Method to set the sql string of the field.
+	 * Creates a field object from the sql field definition.
 	 * 
 	 * @param string $sqlString
-	 * @return Domain_Database_Field
+	 * @return Domain_Database_Field_Field
 	 */
-	public function setSql($sqlString) {
+	public function createFromSql($sqlString) {
 		$this->sqlString = $sqlString;
-		$this->parseSql();
+		$field = $this->parseSql();
 		
-		return $this;
+		return $field;
 	}
-
+	
 	/**
 	 * Method to parse the field sql.
 	 * 
-	 * @return bool
+	 * @return Domain_Database_Field_Field
 	 */
-	public function parseSql() {
-		$this->extractFieldname()->extractDatatype()->extractAutoIncrement();
+	protected function parseSql() {
+		$field = new Domain_Database_Field_Field();
+		
+		$this->extractFieldname($field)->extractDatatype($field)->extractAutoIncrement($field);
+		
+		return $field;
 	}
 
 	/**
 	 * Extracts and sets the fieldname.
 	 * 
-	 * @return Domain_Database_Field
+	 * @param Domain_Database_Field_Field $field
+	 * @return Domain_Database_Field_Factory
 	 */
-	protected function extractFieldname() {
+	protected function extractFieldname(Domain_Database_Field_Field  $field) {
 		$matches = array();
 		
 			//`<fieldname>` ...
@@ -239,7 +118,7 @@ class Domain_Database_Field implements Interface_SqlParser {
 			if(is_array($matches) && array_key_exists('fieldname',$matches)) {
 				$fieldName = $matches['fieldname'];
 
-				$this->setFieldname($fieldName);
+				$field->setName($fieldName);
 			} else {
 				throw new Exception_Parsing_ExtractFieldname('No fieldname found: '.var_export($matches,true));
 			}
@@ -253,21 +132,22 @@ class Domain_Database_Field implements Interface_SqlParser {
 	/**
 	 * Extracts and sets the datatype.
 	 * 
-	 * @return Domain_Database_Field
+	 * @param Domain_Database_Field_Field $field
+	 * @return Domain_Database_Field_Factory
 	 */
-	protected function extractDatatype() {
+	protected function extractDatatype(Domain_Database_Field_Field $field) {
 		foreach ($this->dataTypeAliases as $dataType => $aliases) {
 			foreach($aliases as $alias) {
 				$matches = array();
 				
 				// `FIELDNAME` DATATYPE(SIZE,PRECISION[options]) followed by at least one space or line end 
 				if(preg_match('~`[^`]*`.*'.$alias.'(\((?<size>[1-9][0-9]*)(,(?<precision>[1-9][0-9]*))?\))?([[:space:]]+.*|$)~ims',$this->sqlString,$matches) === 1) {
-					$this->setDatatype($dataType);
-					$this->setDatatypeAlias($alias);
+					$field->setDatatype($dataType);
+					$field->setDatatypeAlias($alias);
 					
 					if(is_array($matches) && array_key_exists('size',$matches)) {
 						$size = intval($matches['size']);
-						$this->setSize($size);
+						$field->setSize($size);
 					}
 					
 					return $this;
@@ -282,12 +162,14 @@ class Domain_Database_Field implements Interface_SqlParser {
 	 * Extracts if the field is an AUTO INCREMENT field
 	 * and set sets the auto increment flag if needed.
 	 * 
-	 * @return Domain_Database_Field
+	 * @param Domain_Database_Field_Field $field
+	 * @return Domain_Database_Field_Factory
 	 */
-	protected function extractAutoIncrement() {
+	protected function extractAutoIncrement(Domain_Database_Field_Field $field) {
 		if(preg_match('~.*AUTO_INCREMENT.*~ims', $this->sqlString) === 1) {
-			$this->setAutoIncrement(true);
+			$field->setAutoIncrement(true);
 		}
+		
 		return $this;
 	}
 }

@@ -27,7 +27,7 @@ class Mocked_Domain_Database_SchemaMigratorTestcase extends Mocked_AbstractMocke
 	 * @return void
 	 */
 	public function setUp() {
-		$this->migrator = new Domain_Database_SchemaMigrator();
+		$this->migrator = new Domain_Database_Schema_Migrator();
 	}
 	
 	/**
@@ -98,7 +98,7 @@ class Mocked_Domain_Database_SchemaMigratorTestcase extends Mocked_AbstractMocke
 	 * @dataProvider addNoneExistingFieldDataprovider
 	 */
 	public function canAddNoneExistsingField($schemaASql, $schemaBSql, $expectedUp, $expectedDown) {
-	/*	$schemaA 	= new Domain_Database_Schema();
+/*		$schemaA 	= new Domain_Database_Schema();
 		$schemaA->setSql($schemaASql);
 		
 		$schemaB 	= new Domain_Database_Schema();

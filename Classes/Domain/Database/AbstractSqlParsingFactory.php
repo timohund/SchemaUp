@@ -10,21 +10,21 @@
 ****************************************************************/
 
 /**
- * Interface for classes that deal with sql parsing.
+ * Interface for factorys that can create objects from sql
  * 
  * @package SchemaUp
- * @subpackage Classes\Interface
+ * @subpackage Classes\Domain\Database
  * @author Timo Schmidt <timo-schmidt@gmx.net>
  */
-interface Interface_SqlParser { 
+abstract class Domain_Database_AbstractSqlParsingFactory { 
 	
 	/**
-	 * Method to set the sql string.
+	 * Creates an object from sql.
 	 * 
 	 * @param string $sql
-	 * @return Interface_SqlParser
+	 * @return object
 	 */
-	public function setSql($sql);
+	abstract public function createFromSql($sql);
 	
 	/**
 	 * Implementation should implement the method parseSql
@@ -32,5 +32,5 @@ interface Interface_SqlParser {
 	 * 
 	 * @return boolean
 	 */
-	public function parseSql();
+	 abstract protected function parseSql();
 }

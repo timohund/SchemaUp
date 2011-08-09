@@ -23,10 +23,10 @@ class Mocked_Domain_Database_SchemaTestcase extends Mocked_AbstractMockedTestcas
 	 * 
 	 * @test 
 	 */
-	public function getTables() {
+	public function extractTables() {
 		$fixtureSql		= $this->getFixtureContent('dump1.sql',__FILE__);
-		$schema			= new Domain_Database_Schema();
-		$schema->setSql($fixtureSql);
+		$schemaFactory	= new Domain_Database_Schema_Factory();
+		$schema			= $schemaFactory->createFromSql($fixtureSql);
 		
 		$this->assertEquals(6,$schema->getTables()->getCount(),'Unexpected number of tables in the schema');
 	}
