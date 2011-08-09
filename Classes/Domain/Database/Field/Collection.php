@@ -16,7 +16,7 @@
  * @subpackage Classes\Domain
  * @author Timo Schmidt <timo-schmidt@gmx.net>
  */
-class Domain_Database_Field_Collection extends System_AbstractCollection {
+class Domain_Database_Field_Collection extends System_AbstractCollection implements Interface_Compareable{
 
 	/**
 	 * This method is used to check if a field with
@@ -46,5 +46,41 @@ class Domain_Database_Field_Collection extends System_AbstractCollection {
 		}
 		
 		return $result;
+	}
+	
+	/**
+	 * Determine if on collection contains the same fields as another collection.
+	 * 
+	 * @param Domain_Database_Field_Collection $toCompate
+	 */
+	public function equals($toCompare) {
+		System_Tools::assertType('Domain_Database_Field_Collection', $toCompare);
+		
+		$equals = true;
+		$equals = $equals && ($this->getCount() == $toCompare->getCount());
+		
+			//if the collection contain a diffrent amount of fields, we
+			//do not need to compare them.
+		if($equals) {
+			for($it = $this->getIterator(); $it->valid(); $it->next()) {
+					//@var $currentField Domain_Database_Table_Field
+				$currentFieldSourceSchema = $it->current();
+				$currentFieldTargetSchema = $toCompare->getField($currentFieldSourceSchema);
+				
+				if($currentFieldTargetSchema instanceof Domain_Database_Field_Field) {
+					$equals == $equals && ($currentFieldSourceSchema->equals($currentFieldTargetSchema));
+				} else {
+					$equals = false;
+				}
+				
+					//as soon as equals is false we can set equals to false and return
+				if(!$equals) {
+					$equals = false;
+					break;
+				}
+			}
+		}
+				
+		return $equals;
 	}
 }

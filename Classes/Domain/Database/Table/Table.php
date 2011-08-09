@@ -16,12 +16,11 @@
  * @subpackage Classes\System
  * @author Timo Schmidt <timo-schmidt@gmx.net>
  */
-class Domain_Database_Table_Table {
+class Domain_Database_Table_Table implements Interface_Compareable{
 	
 	const PREFIX_KEY = 'KEY';
 	
 	const PREFIX_PRIMARY_KEY = 'PRIMARY_KEY';
-	
 	
 	/**
 	 * @var string $name the name of the table
@@ -83,9 +82,11 @@ class Domain_Database_Table_Table {
 	 * Adds a database field to the table.
 	 * 
 	 * @param Domain_Database_Field_Field $field
+	 * @return Domain_Database_Table_Table
 	 */
 	public function addField(Domain_Database_Field_Field $field) {
-		return $this->fields->add($field);
+		$this->fields->add($field);
+		return $this;
 	}
 	
 	/**
@@ -96,5 +97,18 @@ class Domain_Database_Table_Table {
 	 */
 	public function getField(Domain_Database_Field_Field $field) {
 		return $this->fields->getField($field);
-	}	
+	}
+	
+	/**
+	 * Method to compare one database table with another.
+	 * 
+	 * @param Domain_Database_Table_Table $toCompare
+	 */
+	public function equals($toCompare) {
+		$equals = true;
+		$equals = $equals && ($this->getName() == $toCompare->getName());
+		$equals = $equals && $this->getFields()->equals($toCompare->getFields());
+		
+		return $equals;
+	}
 }

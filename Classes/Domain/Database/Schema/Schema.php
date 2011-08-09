@@ -16,7 +16,7 @@
  * @subpackage Classes\Domain
  * @author Timo Schmidt <timo-schmidt@gmx.net>
  */
-class Domain_Database_Schema_Schema {
+class Domain_Database_Schema_Schema implements Interface_Compareable{
 	
 	/**
 	 * @var $tables Domain_TableCollection
@@ -44,7 +44,7 @@ class Domain_Database_Schema_Schema {
 	 * 
 	 * @param Domain_Database_Table $table
 	 */
-	public function hasTable(Domain_Database_Table $table) {
+	public function hasTable(Domain_Database_Table_Table $table) {
 		return $this->getTables()->hasTable($table);
 	}
 	
@@ -62,8 +62,22 @@ class Domain_Database_Schema_Schema {
 	 * Method to add a table to the schema.
 	 * 
 	 * @param Domain_Database_Table_Table $table
+	 * @return Domain_Database_Schema_Schema
 	 */
 	public function addTable(Domain_Database_Table_Table  $table) {
-		return $this->getTables()->add($table);
+		$this->getTables()->add($table);
+		
+		return $this;
+	}
+	
+	/**
+	 * Method to compare if one Schema equals another schema.
+	 * 
+	 * @param Domain_Database_Schema_Schema $toCompare
+	 * @return boolean
+	 */
+	public function equals($toCompare) {
+		$result = $this->getTables()->equals($toCompare->getTables());
+		return $result;
 	}
 }
