@@ -16,7 +16,7 @@
  * @subpackage Classes\Domain\Database\Field
  * @author Timo Schmidt <timo-schmidt@gmx.net>
  */
-class Domain_Database_Field_Field implements Interface_Visitable{
+class Domain_Database_Field_Field implements Interface_Visitable, Interface_Sqlable{
 	
 	/**
 	 * @var $name string
@@ -42,6 +42,25 @@ class Domain_Database_Field_Field implements Interface_Visitable{
 	 * @var $autoIncrement boolean indicates if the field is an auto increment field or not
 	 */
 	protected $autoIncrement = false;
+	
+	/**
+	 * @var $sql string holds the sql used for the creation of this element
+	 */
+	protected $sql;
+	
+	/**
+	 * @param string
+	 */
+	public function setSql($sql) {
+		$this->sql = $sql;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getSql() {
+		return $this->sql;
+	}
 	
 	/**
 	 * Method to set the name of the database field.

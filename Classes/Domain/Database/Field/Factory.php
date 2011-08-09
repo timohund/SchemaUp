@@ -98,6 +98,7 @@ class Domain_Database_Field_Factory extends Domain_Database_AbstractSqlParsingFa
 	 */
 	protected function parseSql() {
 		$field = new Domain_Database_Field_Field();
+		$field->setSql($this->sqlString);
 		
 		$this->extractFieldname($field)->extractDatatype($field)->extractAutoIncrement($field);
 		

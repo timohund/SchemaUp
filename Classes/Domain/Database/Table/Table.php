@@ -33,6 +33,25 @@ class Domain_Database_Table_Table implements Interface_Visitable{
 	protected $fields;
 	
 	/**
+	 * @var $sql string holds the sql used for the creation of this element
+	 */
+	protected $sql;
+	
+	/**
+	 * @param string
+	 */
+	public function setSql($sql) {
+		$this->sql = $sql;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getSql() {
+		return $this->sql;
+	}	
+	
+	/**
 	 * Constructor.
 	 * 
 	 * @return void

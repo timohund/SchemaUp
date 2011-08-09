@@ -24,6 +24,25 @@ class Domain_Database_Schema_Schema implements Interface_Visitable{
 	protected $tables;
 	
 	/**
+	 * @var $sql string holds the sql used for the creation of this element
+	 */
+	protected $sql;
+	
+	/**
+	 * @param string
+	 */
+	public function setSql($sql) {
+		$this->sql = $sql;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getSql() {
+		return $this->sql;
+	}
+		
+	/**
 	 * @return void
 	 */
 	public function __construct() {

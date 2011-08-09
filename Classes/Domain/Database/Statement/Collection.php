@@ -16,7 +16,7 @@
  * @subpackage Classes\System
  * @author Timo Schmidt <timo-schmidt@gmx.net>
  */
-class Domain_Database_Statement_Collection extends System_AbstractCollection implements Interface_SqlCreater{
+class Domain_Database_Statement_Collection extends System_AbstractCollection {
 	
 	/**
 	 * 

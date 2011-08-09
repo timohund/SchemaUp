@@ -53,7 +53,7 @@ class Domain_Database_Schema_Factory extends Domain_Database_AbstractSqlParsingF
 	 */
 	protected function parseSql() {
 		$schema = new Domain_Database_Schema_Schema();
-		
+		$schema->setSql($this->sqlString);
 		$this->extractCreatedTables($schema);
 		
 		return $schema;
