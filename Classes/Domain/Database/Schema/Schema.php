@@ -16,7 +16,7 @@
  * @subpackage Classes\Domain
  * @author Timo Schmidt <timo-schmidt@gmx.net>
  */
-class Domain_Database_Schema_Schema implements Interface_Compareable{
+class Domain_Database_Schema_Schema implements Interface_Visitable{
 	
 	/**
 	 * @var $tables Domain_TableCollection
@@ -71,13 +71,12 @@ class Domain_Database_Schema_Schema implements Interface_Compareable{
 	}
 	
 	/**
-	 * Method to compare if one Schema equals another schema.
+	 * Visitor implementation.
 	 * 
-	 * @param Domain_Database_Schema_Schema $toCompare
-	 * @return boolean
+	 * @param Interface_Visitor $visitor
 	 */
-	public function equals($toCompare) {
-		$result = $this->getTables()->equals($toCompare->getTables());
-		return $result;
+	public function visit(Interface_Visitor $visitor) {
+		$visitor->setVisitable($this);
+		$this->tables->visit($visitor);
 	}
 }

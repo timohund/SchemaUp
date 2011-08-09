@@ -16,7 +16,7 @@
  * @subpackage Classes\Domain
  * @author Timo Schmidt <timo-schmidt@gmx.net>
  */
-class Domain_Database_Field_Collection extends System_AbstractCollection implements Interface_Compareable{
+class Domain_Database_Field_Collection extends System_AbstractCollection implements Interface_Visitable{
 
 	/**
 	 * This method is used to check if a field with
@@ -49,38 +49,15 @@ class Domain_Database_Field_Collection extends System_AbstractCollection impleme
 	}
 	
 	/**
-	 * Determine if on collection contains the same fields as another collection.
+	 * Implementation of the visitor interface.
 	 * 
-	 * @param Domain_Database_Field_Collection $toCompate
+	 * @param Interface_Visitor $visitor
 	 */
-	public function equals($toCompare) {
-		System_Tools::assertType('Domain_Database_Field_Collection', $toCompare);
-		
-		$equals = true;
-		$equals = $equals && ($this->getCount() == $toCompare->getCount());
-		
-			//if the collection contain a diffrent amount of fields, we
-			//do not need to compare them.
-		if($equals) {
-			for($it = $this->getIterator(); $it->valid(); $it->next()) {
-					//@var $currentField Domain_Database_Table_Field
-				$currentFieldSourceSchema = $it->current();
-				$currentFieldTargetSchema = $toCompare->getField($currentFieldSourceSchema);
-				
-				if($currentFieldTargetSchema instanceof Domain_Database_Field_Field) {
-					$equals == $equals && ($currentFieldSourceSchema->equals($currentFieldTargetSchema));
-				} else {
-					$equals = false;
-				}
-				
-					//as soon as equals is false we can set equals to false and return
-				if(!$equals) {
-					$equals = false;
-					break;
-				}
-			}
+	public function visit(Interface_Visitor $visitor) {
+		$visitor->setVisitable($this);
+		for($it = $this->getIterator(); $it->valid(); $it->next()) {
+			$currentField = $it->current();
+			$currentField->visit($visitor);
 		}
-				
-		return $equals;
 	}
 }

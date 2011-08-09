@@ -16,7 +16,7 @@
  * @subpackage Classes\System
  * @author Timo Schmidt <timo-schmidt@gmx.net>
  */
-class Domain_Database_Table_Collection extends System_AbstractCollection implements Interface_Compareable{
+class Domain_Database_Table_Collection extends System_AbstractCollection implements Interface_Visitable{
 
 	/**
 	 * Method to add a table to the table collection.
@@ -58,36 +58,17 @@ class Domain_Database_Table_Collection extends System_AbstractCollection impleme
 	}
 	
 	/**
-	 * Compares the table collection to another table collection.
+	 * Implementation of the visitor interface. 
 	 * 
-	 * @param Domain_Database_Table_Collection $toCompate
+	 * @param Interface_Visitor $visitor
 	 */
-	public function equals($toCompare) {
-		$equals = true;
-		$equals = $equals && ($this->getCount() == $toCompare->getCount());
+	public function visit(Interface_Visitor $visitor) {
+		$visitor->setVisitable($this);
 		
-			//if the collection contain a diffrent amount of tables, we
-			//do not need to compare them.
-		if($equals) {
-			for($it = $this->getIterator(); $it->valid(); $it->next()) {
-				//@var $currentTable Domain_Database_Table_Table
-				$currentTableSourceSchema = $it->current();
-				$currentTableTargetSchema = $toCompare->getTable($currentTableSourceSchema);
-				
-				if($currentTableTargetSchema instanceof Domain_Database_Table_Table) {
-					$equals = $equals && $currentTableSourceSchema->equals($currentTableTargetSchema);
-				} else {
-					$equals = false;
-				}
-				
-					//as soon as equals is false we can set equals to false and return
-				if(!$equals) {
-					$equals = false;
-					break;
-				}
-			}
+		for($it = $this->getIterator(); $it->valid(); $it->next()) {
+				/* $currentTable Domain_Database_Table_Table */
+			$currentTable = $it->current();
+			$currentTable->visit($visitor);
 		}
-		
-		return $equals;
 	}
 }

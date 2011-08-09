@@ -16,7 +16,7 @@
  * @subpackage Classes\Domain\Database\Field
  * @author Timo Schmidt <timo-schmidt@gmx.net>
  */
-class Domain_Database_Field_Field implements Interface_Compareable{
+class Domain_Database_Field_Field implements Interface_Visitable{
 	
 	/**
 	 * @var $name string
@@ -143,18 +143,11 @@ class Domain_Database_Field_Field implements Interface_Compareable{
 	}
 	
 	/**
-	 * Method to compare one database field with another.
-	 *  
-	 * @param Domain_Database_Field_Field $toCompare
-	 * @return boolean
+	 * Implemenation of the visitor interface
+	 * 
+	 * @param Interface_Visitor $visitor
 	 */
-	public function equals($toCompare) {
-		$equals 	= true;
-		$equals 	= $equals && ($this->getAutoIncrement() === $toCompare->getAutoIncrement());
-		$equals		= $equals && ($this->getDatatype() === $toCompare->getDatatype());
-		$equals		= $equals && ($this->getSize() === $toCompare->getSize());
-		$equals		= $equals && ($this->getName() === $toCompare->getName());
-
-		return $equals;
-	} 
+	public function visit(Interface_Visitor $visitor) {
+		$visitor->setVisitable($this);
+	}
 }

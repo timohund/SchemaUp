@@ -16,7 +16,7 @@
  * @subpackage Classes\System
  * @author Timo Schmidt <timo-schmidt@gmx.net>
  */
-class Domain_Database_Table_Table implements Interface_Compareable{
+class Domain_Database_Table_Table implements Interface_Visitable{
 	
 	const PREFIX_KEY = 'KEY';
 	
@@ -100,15 +100,12 @@ class Domain_Database_Table_Table implements Interface_Compareable{
 	}
 	
 	/**
-	 * Method to compare one database table with another.
+	 * Implementation of the visitor interface.
 	 * 
-	 * @param Domain_Database_Table_Table $toCompare
+	 * @param Interface_Visitor $visitor
 	 */
-	public function equals($toCompare) {
-		$equals = true;
-		$equals = $equals && ($this->getName() == $toCompare->getName());
-		$equals = $equals && $this->getFields()->equals($toCompare->getFields());
-		
-		return $equals;
+	public function visit(Interface_Visitor $visitor) {
+		$visitor->setVisitable($this);
+		$this->fields->visit($visitor);
 	}
 }
