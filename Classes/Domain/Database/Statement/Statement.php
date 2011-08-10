@@ -1,6 +1,6 @@
 <?php
 
-class Domain_Database_Statement_Statement implements Interface_SqlCreater {
+class Domain_Database_Statement_Statement implements Interface_Sqlable{
 	
 	/**
 	 * 
