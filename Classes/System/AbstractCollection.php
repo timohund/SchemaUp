@@ -23,7 +23,7 @@ class System_AbstractCollection extends ArrayObject {
 	 * 
 	 * @param object $object
 	 */
-	public function add($object) {
+	protected function add($object) {
 		$this->append($object);
 	}
 

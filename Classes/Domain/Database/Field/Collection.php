@@ -19,6 +19,18 @@
 class Domain_Database_Field_Collection extends System_AbstractCollection implements Interface_Visitable{
 
 	/**
+	 * Method to add a new database field to the field collection.
+	 * 
+	 * @param Domain_Database_Field_Field $fieldToAdd
+	 * @return Domain_Database_Field_Collection
+	 */
+	public function addField(Domain_Database_Field_Field $fieldToAdd) {
+		$this->add($fieldToAdd);
+
+		return $this;
+	}
+
+	/**
 	 * This method is used to check if a field with
 	 * the same name of the given field exists in the field collection.
 	 * 

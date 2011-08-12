@@ -17,17 +17,12 @@
  * @subpackage Classes\Domain\Database\Visitor
  * @author Timo Schmidt <timo-schmidt@gmx.net>
  */
-class Domain_Database_Visitor_Added extends Domain_Database_Visitor_AbstractSchemaVisitor {
-	
+class Domain_Database_Visitor_Added extends Domain_Database_Visitor_AbstractMigratingSchemaVisitor {
+
 	/**
 	 * @var Domain_Database_Schema_Schema
 	 */
 	protected $sourceSchema;
-	
-	/**
-	 * @var Domain_Database_Schema_MigrationStorage
-	 */
-	protected $migrationStorage;
 	
 	/**
 	 * @array array to remember added tables
@@ -39,21 +34,13 @@ class Domain_Database_Visitor_Added extends Domain_Database_Visitor_AbstractSche
 	 * used for comparision.
 	 * 
 	 * @param Domain_Database_Schema_Schema $sourceSchema
+	 * @return Domain_Database_Visitor_Added
 	 */
 	public function setSourceSchema(Domain_Database_Schema_Schema $sourceSchema) {
 		$this->sourceSchema = $sourceSchema;
+		return $this;
 	}
-	
-	/**
-	 * Method to pass a migration storage that collects
-	 * the migration information.
-	 * 
-	 * @param Domain_Database_Schema_MigrationStorage $migrationStorage
-	 */
-	public function setMigrationStorage(Domain_Database_Schema_MigrationStorage $migrationStorage) {
-		$this->migrationStorage = $migrationStorage;
-	}
-	
+
 	/**
 	 * 
 	 * @param Interface_Visitable $targetSchemaObject

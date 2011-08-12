@@ -59,7 +59,7 @@ class Mocked_Domain_Database_Visitor_AddedTestcase extends Mocked_AbstractMocked
 	 * 
 	 * @test
 	 */
-	public function setVisitorAddsCreateTableOnlyOnceWhenFieldFromSameTableGetsProcessed() {
+	public function setVisitableAddsCreateTableOnlyOnceWhenFieldFromSameTableGetsProcessed() {
 		$sourceSchemaMock = $this->getMock('Domain_Database_Schema_Schema');
 		$sourceSchemaMock->expects($this->any())->method('hasTable')->will($this->returnValue(false));
 		
@@ -90,7 +90,7 @@ class Mocked_Domain_Database_Visitor_AddedTestcase extends Mocked_AbstractMocked
 	 * 
 	 * @test
 	 */
-	public function setVisitorAddsAlterTableAddForNewColumns() {
+	public function setVisitableAddsAlterTableForNewColumns() {
 		$sourceTableMock = $this->getMock('Domain_Database_Table_Table');
 		$sourceTableMock->expects($this->any())->method('hasField')->will($this->returnValue(false));
 		

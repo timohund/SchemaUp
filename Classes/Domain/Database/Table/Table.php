@@ -104,7 +104,7 @@ class Domain_Database_Table_Table implements Interface_Visitable{
 	 * @return Domain_Database_Table_Table
 	 */
 	public function addField(Domain_Database_Field_Field $field) {
-		$this->fields->add($field);
+		$this->fields->addField($field);
 		return $this;
 	}
 	

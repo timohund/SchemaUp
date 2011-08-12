@@ -139,4 +139,33 @@ class Mocked_Domain_Database_Field_FactoryTestcase extends Mocked_AbstractMocked
 		$this->assertEquals($currentDataType, $expectedDataType, 'Factory determined unexpected data type');
 		$this->assertEquals($currentDataTypeAlias, $expectedDataTypeAlias, 'Factory determined unexpected data type alias');
 	}
+
+	/**
+	 * We expect that an  Exception_Parsing_ExtractFieldname exception will be thrown
+	 * when an mal form field query gets passed.
+	 * 
+	 * @expectedException  Exception_Parsing_ExtractFieldname
+	 * @test
+	 * @return void
+	 */
+	public function missingFieldnameThrowsExtractFieldnameException() {
+			//fieldname is missing: `id` int(11) unsigned NOT NULL'
+		$mallFormedFieldQuery = 'int(11) unsigned NOT NULL';
+		$field					= $this->factory->createFromSql($mallFormedFieldQuery);
+	}
+
+	/**
+	 * When the datatype in the field query is missing an
+	 * Exception_Pasing_ExtractDatatype should be thrown.
+	 * 
+	 * @expectedException Exception_Parsing_ExtractDatatype
+	 * @test
+	 * @return void
+	 */
+	public function missingDatatypeThrowsExtractDatatypeException() {
+			//fieldname is missing: `id` int(11) unsigned NOT NULL'
+		$mallFormedFieldQuery = '`id` unsigned NOT NULL';
+		$field					= $this->factory->createFromSql($mallFormedFieldQuery);
+
+	}
 }

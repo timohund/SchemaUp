@@ -64,7 +64,6 @@ class Domain_Database_Table_Collection extends System_AbstractCollection impleme
 	 */
 	public function visit(Interface_Visitor $visitor) {
 		$visitor->setVisitable($this);
-		
 		for($it = $this->getIterator(); $it->valid(); $it->next()) {
 				/* $currentTable Domain_Database_Table_Table */
 			$currentTable = $it->current();
