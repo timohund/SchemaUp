@@ -49,6 +49,25 @@ class Mocked_Domain_Database_SchemaMigratorTestcase extends Mocked_AbstractMocke
 				'expectedUp' => 'ALTER TABLE `document` ADD `source` varchar(40) COLLATE utf8_unicode_ci NOT NULL;',
 				'expectedDown' => 'ALTER TABLE `document` DROP `source`;'
 			),
+			array(
+				'schemaA' => "CREATE TABLE `document` (
+								`id` int(32) NOT NULL
+							) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+							CREATE TABLE `links` (
+								`id` int(32) NOT NULL,
+								`title` varchar(255) NOT NULL
+							) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;",
+				'schemaB' => "CREATE TABLE `document` (
+								`id` int(32) NOT NULL,
+								`source` varchar(40) COLLATE utf8_unicode_ci NOT NULL
+							) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci",
+				'expectedUp' => 'ALTER TABLE `document` ADD `source` varchar(40) COLLATE utf8_unicode_ci NOT NULL; DROP TABLE `links`;',
+				'expectedDown' => 'CREATE TABLE `links` (
+								`id` int(32) NOT NULL,
+								`title` varchar(255) NOT NULL
+							) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci; ALTER TABLE `document` DROP `source`;',
+			),
+
 			//create a varchar field with some confusing whitespaces in schema
 			array(
 				'schemaA' => "CREATE TABLE `document` (
@@ -104,7 +123,13 @@ class Mocked_Domain_Database_SchemaMigratorTestcase extends Mocked_AbstractMocke
 		
 		$upSql			= $this->migrator->setSourceSchema($schemaA)->setTargetSchema($schemaB)->getMigrationStatements();
 		$downSql		= $this->migrator->setSourceSchema($schemaB)->setTargetSchema($schemaA)->getMigrationStatements();
-		
+
+		$expectedDown	= preg_replace("~(\s\s+)~",' ',$expectedDown);
+		$downSql		= preg_replace("~(\s\s+)~",' ',$downSql);
+
+		$expectedUp		= preg_replace("~(\s\s+)~",' ',$expectedUp);
+		$upSql			= preg_replace("~(\s\s+)~",' ',$upSql);
+
 		$this->assertEquals($expectedUp, $upSql, 'Migrator did not create expected schema up sql');
 		$this->assertEquals($expectedDown, $downSql, 'Migrator did not create expected schema down sql'); 
 	}
