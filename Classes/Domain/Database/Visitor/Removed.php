@@ -60,7 +60,6 @@ class Domain_Database_Visitor_Removed extends Domain_Database_Visitor_AbstractMi
 			case 'Domain_Database_Field_Field':
 				/** @var $visitable  Domain_Database_Field_Field */
 				$fieldTable = $this->getCurrentTable();
-
 				if(!array_search($fieldTable->getName(),$this->removedTableNames)) {
 					if($this->targetSchema->hasTable($fieldTable)) {
 						$targetSchemaTable = $this->targetSchema->getTable($fieldTable);

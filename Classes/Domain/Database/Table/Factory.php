@@ -31,7 +31,7 @@ class Domain_Database_Table_Factory extends Domain_Database_AbstractSqlParsingFa
 	/**
 	 * Constructor
 	 * 
-	 * @return void
+	 * @return Domain_Database_Table_Factory
 	 */
 	public function __construct() {
 		$this->fieldFactory = new Domain_Database_Field_Factory();
@@ -45,9 +45,7 @@ class Domain_Database_Table_Factory extends Domain_Database_AbstractSqlParsingFa
 	 */
 	public function createFromSql($sqlString) {
 		$this->sqlString = $sqlString;
-		
 		$table = $this->parseSql();
-		
 		return $table;
 	}
 	

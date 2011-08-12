@@ -11,7 +11,7 @@
 
 /**
  * Visits the target schema and checks for each node, if it
- * also extists in the source schema
+ * also exists in the source schema.
  * 
  * @package SchemaUp
  * @subpackage Classes\Domain\Database\Visitor
@@ -31,7 +31,7 @@ class Domain_Database_Visitor_Added extends Domain_Database_Visitor_AbstractMigr
 	
 	/**
 	 * Method to pass the source schema, that should be
-	 * used for comparision.
+	 * used to compare.
 	 * 
 	 * @param Domain_Database_Schema_Schema $sourceSchema
 	 * @return Domain_Database_Visitor_Added
@@ -42,6 +42,9 @@ class Domain_Database_Visitor_Added extends Domain_Database_Visitor_AbstractMigr
 	}
 
 	/**
+	 * The do work method is called by the abstract method to
+	 * check each node. In case of the AddedVisitor it should determine
+	 * all new added tables and fields in the target schema.
 	 * 
 	 * @param Interface_Visitable $targetSchemaObject
 	 */
@@ -50,7 +53,7 @@ class Domain_Database_Visitor_Added extends Domain_Database_Visitor_AbstractMigr
 
 		switch($class) {
 			case 'Domain_Database_Table_Table':
-				/** @var $targetSchemaObject Domain_Database_Schema_Table */
+				/** @var $targetSchemaObject Domain_Database_Table_Table */
 				if(!$this->sourceSchema->hasTable($targetSchemaObject)) {
 					$this->migrationStorage->add($targetSchemaObject->getSql());
 					$this->addedTableNames[] = $targetSchemaObject->getName();
@@ -58,6 +61,7 @@ class Domain_Database_Visitor_Added extends Domain_Database_Visitor_AbstractMigr
 			break;
 			
 			case 'Domain_Database_Field_Field':
+				/** @var $targetSchemaObject Domain_Database_Field_Field */
 				$fieldTable = $this->getCurrentTable();
 				if(!array_search($fieldTable->getName(),$this->addedTableNames)) {
 					if($this->sourceSchema->hasTable($fieldTable)) {

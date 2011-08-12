@@ -27,9 +27,18 @@ class Domain_Database_Schema_Schema implements Interface_Visitable{
 	 * @var $sql string holds the sql used for the creation of this element
 	 */
 	protected $sql;
-	
+
 	/**
-	 * @param string
+	 * Constructor.
+	 *
+	 * @return Domain_Database_Schema_Schema
+	 */
+	public function __construct() {
+		$this->tables = new Domain_Database_Table_Collection();
+	}
+
+	/**
+	 * @param string $sql
 	 */
 	public function setSql($sql) {
 		$this->sql = $sql;
@@ -41,14 +50,7 @@ class Domain_Database_Schema_Schema implements Interface_Visitable{
 	public function getSql() {
 		return $this->sql;
 	}
-		
-	/**
-	 * @return void
-	 */
-	public function __construct() {
-		$this->tables = new Domain_Database_Table_Collection();
-	}
-	
+
 	/**
 	 * Returns a table collection
 	 * 
@@ -84,8 +86,7 @@ class Domain_Database_Schema_Schema implements Interface_Visitable{
 	 * @return Domain_Database_Schema_Schema
 	 */
 	public function addTable(Domain_Database_Table_Table  $table) {
-		$this->getTables()->add($table);
-		
+		$this->getTables()->addTable($table);
 		return $this;
 	}
 	

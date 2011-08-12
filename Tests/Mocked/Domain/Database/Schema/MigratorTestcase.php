@@ -50,7 +50,7 @@ class Mocked_Domain_Database_SchemaMigratorTestcase extends Mocked_AbstractMocke
 				'expectedDown' => 'ALTER TABLE `document` DROP `source`;'
 			),
 			//create a varchar field with some confusing whitespaces in schema
-			array(
+/*			array(
 				'schemaA' => "CREATE TABLE `document` (
 								`id` int(32) NOT NULL
 							) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci",
@@ -61,7 +61,7 @@ class Mocked_Domain_Database_SchemaMigratorTestcase extends Mocked_AbstractMocke
 				'expectedUp' => 'ALTER TABLE `document` ADD `source` varchar(40) COLLATE utf8_unicode_ci NOT NULL;',
 				'expectedDown' => 'ALTER TABLE `document` DROP `source`;'
 			),
-			//create a varchar field with some lower and uppercase diffrences
+			//create a varchar field with some lower and uppercase differences
 			array(
 				'schemaA' => "create table `document` (
 								`id` int(32) NoT NuLL
@@ -73,7 +73,7 @@ class Mocked_Domain_Database_SchemaMigratorTestcase extends Mocked_AbstractMocke
 				'expectedUp' => 'ALTER TABLE `document` ADD `source` varchar(40) COLLATE utf8_unicode_ci NOT NULL;',
 				'expectedDown' => 'ALTER TABLE `document` DROP `source`;'
 			),
-			
+*/
 			//create a mediumblob field
 			array(
 				'schemaA' => "CREATE TABLE `document` (
@@ -84,7 +84,7 @@ class Mocked_Domain_Database_SchemaMigratorTestcase extends Mocked_AbstractMocke
 							`linktext` mediumblob NOT NULL
 							) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci",
 				'expectedUp' => 'ALTER TABLE `document` ADD `linktext` mediumblob NOT NULL;',
-				'expectedDown' => 'ALTER TABLE `document` DROP `source`;'
+				'expectedDown' => 'ALTER TABLE `document` DROP `linktext`;'
 			)
 			
 		);
@@ -98,16 +98,14 @@ class Mocked_Domain_Database_SchemaMigratorTestcase extends Mocked_AbstractMocke
 	 * @dataProvider addNoneExistingFieldDataprovider
 	 */
 	public function canAddNoneExistsingField($schemaASql, $schemaBSql, $expectedUp, $expectedDown) {
-/*		$schemaA 	= new Domain_Database_Schema();
-		$schemaA->setSql($schemaASql);
+		$schemaFactory	= new Domain_Database_Schema_Factory();
+		$schemaA 		= $schemaFactory->createFromSql($schemaASql);
+		$schemaB		= $schemaFactory->createFromSql($schemaBSql);
 		
-		$schemaB 	= new Domain_Database_Schema();
-		$schemaB->setSql($schemaBSql);
-		
-		$upSql		= $this->migrator->setSourceSchema($schemaA)->setTargetSchema($schemaB)->getMigrationStatements()->getSql();
-		$downSql	= $this->migrator->setSourceSchema($schemaB)->setTargetSchema($schemaA)->getMigrationStatements()->getSql();
+		$upSql			= $this->migrator->setSourceSchema($schemaA)->setTargetSchema($schemaB)->getMigrationStatements();
+		$downSql		= $this->migrator->setSourceSchema($schemaB)->setTargetSchema($schemaA)->getMigrationStatements();
 		
 		$this->assertEquals($expectedUp, $upSql, 'Migrator did not create expected schema up sql');
-		$this->assertEquals($expectedDown, $downSql, 'Migrator did not create expected schema down sql'); */
+		$this->assertEquals($expectedDown, $downSql, 'Migrator did not create expected schema down sql'); 
 	}
 }

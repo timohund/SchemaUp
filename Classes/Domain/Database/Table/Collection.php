@@ -23,7 +23,7 @@ class Domain_Database_Table_Collection extends System_AbstractCollection impleme
 	 * 
 	 * @param Domain_Database_Table $table
 	 */
-	public function add(Domain_Database_Table_Table $table) {
+	public function addTable(Domain_Database_Table_Table $table) {
 		parent::add($table);
 	}
 	

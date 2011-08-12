@@ -58,6 +58,6 @@ class Domain_Database_Schema_MigrationStorage {
 			$result .= $it->current()."; \n";
 		}
 		
-		return $result;
+		return trim($result);
 	}
 }
