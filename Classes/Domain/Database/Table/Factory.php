@@ -56,6 +56,7 @@ class Domain_Database_Table_Factory extends Domain_Database_AbstractSqlParsingFa
 	 */
 	protected function parseSql() {
 		$table = new Domain_Database_Table_Table();
+		$this->sqlString = preg_replace('~(\s\s+)~',' ',$this->sqlString);
 		$table->setSql($this->sqlString);
 		$this->extractTablenameAndFielddefinitions($table);
 		

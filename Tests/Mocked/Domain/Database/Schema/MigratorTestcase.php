@@ -50,7 +50,7 @@ class Mocked_Domain_Database_SchemaMigratorTestcase extends Mocked_AbstractMocke
 				'expectedDown' => 'ALTER TABLE `document` DROP `source`;'
 			),
 			//create a varchar field with some confusing whitespaces in schema
-/*			array(
+			array(
 				'schemaA' => "CREATE TABLE `document` (
 								`id` int(32) NOT NULL
 							) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci",
@@ -62,7 +62,7 @@ class Mocked_Domain_Database_SchemaMigratorTestcase extends Mocked_AbstractMocke
 				'expectedDown' => 'ALTER TABLE `document` DROP `source`;'
 			),
 			//create a varchar field with some lower and uppercase differences
-			array(
+/*			array(
 				'schemaA' => "create table `document` (
 								`id` int(32) NoT NuLL
 							) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci",
