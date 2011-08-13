@@ -42,7 +42,12 @@ class Domain_Database_Field_Field implements Interface_Visitable, Interface_Sqla
 	 * @var $autoIncrement boolean indicates if the field is an auto increment field or not
 	 */
 	protected $autoIncrement = false;
-	
+
+	/**
+	 * @var int
+	 */
+	protected $precision = 0;
+
 	/**
 	 * @var $sql string holds the sql used for the creation of this element
 	 */
@@ -160,7 +165,25 @@ class Domain_Database_Field_Field implements Interface_Visitable, Interface_Sqla
 	public function getAutoIncrement() {
 		return $this->autoIncrement;
 	}
-	
+
+	/**
+	 * Method to pass the precision of the field.
+	 * 
+	 * @param $precision
+	 */
+	public function setPrecision($precision) {
+		$this->precision = $precision;
+	}
+
+	/**
+	 * Return the precision of the field.
+	 * 
+	 * @return int
+	 */
+	public function getPrecision() {
+		return $this->precision;
+	}
+
 	/**
 	 * Implemenation of the visitor interface
 	 * 

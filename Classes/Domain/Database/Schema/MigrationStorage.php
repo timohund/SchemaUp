@@ -55,7 +55,7 @@ class Domain_Database_Schema_MigrationStorage {
 	public function _toString() {
 		$result = '';
 		for($it = $this->migrationSteps->getIterator(); $it->valid(); $it->next()) {
-			$result .= $it->current()."; \n";
+			$result .= $it->current().";"."\n";
 		}
 		
 		return trim($result);

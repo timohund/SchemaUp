@@ -102,6 +102,23 @@ class Mocked_Domain_Database_TableTestcase extends Mocked_AbstractMockedTestcase
 					) ENGINE=InnoDB DEFAULT CHARSET=utf8				
 				",
 				"expectedNumberOfFields" => 1
+			),
+			array(
+				'createTableSchema' => "CREATE TABLE `catalog_product_option_type_price` (
+					  `option_type_price_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+					  `option_type_id` int(10) unsigned NOT NULL DEFAULT '0',
+					  `store_id` smallint(5) unsigned NOT NULL DEFAULT '0',
+					  `price` decimal(12,4) NOT NULL DEFAULT '0.0000',
+					  `price_type` enum('fixed','percent') NOT NULL DEFAULT 'fixed',
+					  PRIMARY KEY (`option_type_price_id`),
+					  UNIQUE KEY `UNQ_OPTION_TYPE_STORE` (`option_type_id`,`store_id`),
+					  KEY `CATALOG_PRODUCT_OPTION_TYPE_PRICE_OPTION_TYPE` (`option_type_id`),
+					  KEY `CATALOG_PRODUCT_OPTION_TYPE_PRICE_STORE` (`store_id`),
+					  CONSTRAINT `FK_CATALOG_PRODUCT_OPTION_TYPE_PRICE_OPTION` FOREIGN KEY (`option_type_id`) REFERENCES `catalog_product_option_type_value` (`option_type_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+					  CONSTRAINT `FK_CATALOG_PRODUCT_OPTION_TYPE_PRICE_STORE` FOREIGN KEY (`store_id`) REFERENCES `core_store` (`store_id`) ON DELETE CASCADE ON UPDATE CASCADE
+					) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
+				"expextedNumberOfFields" => 5
+
 			)
 		);
 	}

@@ -56,7 +56,7 @@ class Domain_Database_Table_Factory extends Domain_Database_AbstractSqlParsingFa
 	 */
 	protected function parseSql() {
 		$table = new Domain_Database_Table_Table();
-		$this->sqlString = preg_replace('~(\s\s+)~',' ',$this->sqlString);
+	//	$this->sqlString = preg_replace('~(\s\s+)~',' ',$this->sqlString);
 		$table->setSql($this->sqlString);
 		$this->extractTablenameAndFielddefinitions($table);
 		
@@ -83,10 +83,7 @@ class Domain_Database_Table_Factory extends Domain_Database_AbstractSqlParsingFa
 			$fielddefinitions = trim($matches['fielddefinitions']);
 
 			if($fielddefinitions != '') {
-					//the single fields are seperated by , that should not have a ` prepended because this
-					//is used for seperation in key definitions
-				$noPrecisionCommaLookBehind = '(?<!\([1-9])(?<!\([1-9][0-9])(?<!\([1-9][0-9][0-9])(?<!\([1-9][0-9][0-9][0-9])';	
-				$lines = preg_split('~(?<fielddefinition>(?<!`))[[:space:]]*'.$noPrecisionCommaLookBehind.',~ims',$fielddefinitions) ;
+				$lines = $this->splitFieldDefinitionsIntoMultipleLines($fielddefinitions);
 				foreach($lines as $line) {
 					$line = trim($line);
 					//we have a field line when the line starts with `
@@ -102,5 +99,37 @@ class Domain_Database_Table_Factory extends Domain_Database_AbstractSqlParsingFa
 		}		
 		
 		return $this;
-	}	
-}
+	}
+
+	/**
+	 * Splits a field definitions string into multiple lines.
+	 * This needs to be done in php because the split character "," can also occure
+	 * in definitions of the datatype precisions, or an enum field.
+	 * 
+	 * @param $fielddefinitions
+	 * @return array
+	 */
+	protected function splitFieldDefinitionsIntoMultipleLines($fielddefinitions) {
+		$lines		= array();
+
+		$inBracketCounter = 0;
+		$chrArray 	= preg_split('//u',$fielddefinitions, -1, PREG_SPLIT_NO_EMPTY);
+		$line 		= '';
+		$count 		= count($chrArray);
+		$i = 0;
+		foreach($chrArray as $character) {
+			$i++;
+			if($character != ',' || $inBracketCounter > 0) {
+				$line .= $character;
+			}
+			if(($character == ',' || $i == $count) && $inBracketCounter == 0) {
+				$lines[] = trim($line);
+				$line = '';
+			}
+			if($character == '(') { $inBracketCounter++; }
+			if($character == ')') { $inBracketCounter--; }
+		}
+
+		return $lines;
+	}
+ }

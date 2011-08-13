@@ -61,11 +61,15 @@ class Mocked_Domain_Database_SchemaMigratorTestcase extends Mocked_AbstractMocke
 								`id` int(32) NOT NULL,
 								`source` varchar(40) COLLATE utf8_unicode_ci NOT NULL
 							) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci",
-				'expectedUp' => 'ALTER TABLE `document` ADD `source` varchar(40) COLLATE utf8_unicode_ci NOT NULL; DROP TABLE `links`;',
+				'expectedUp' => 'ALTER TABLE `document` ADD `source` varchar(40) COLLATE utf8_unicode_ci NOT NULL;
+DROP TABLE `links`;',
+
 				'expectedDown' => 'CREATE TABLE `links` (
 								`id` int(32) NOT NULL,
 								`title` varchar(255) NOT NULL
-							) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci; ALTER TABLE `document` DROP `source`;',
+							) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+ALTER TABLE `document` DROP `source`;',
+
 			),
 
 			//create a varchar field with some confusing whitespaces in schema
@@ -132,5 +136,27 @@ class Mocked_Domain_Database_SchemaMigratorTestcase extends Mocked_AbstractMocke
 
 		$this->assertEquals($expectedUp, $upSql, 'Migrator did not create expected schema up sql');
 		$this->assertEquals($expectedDown, $downSql, 'Migrator did not create expected schema down sql'); 
+	}
+
+
+	/**
+	 * This is a more complex testcase that should check if the migrator
+	 * can create the expected statements for an schema upgrade from magento 14 to magento 15
+	 *
+	 * @test
+	 * @return void
+	 */
+	public function canCreateUpdateStatementsFromMagento14To15() {
+		$structureMagento14 = $this->getFixtureContent('magento_14.sql',__FILE__);
+		$structureMagento15 = $this->getFixtureContent('magento_15.sql',__FILE__);
+		$expectedSchemaUp   = $this->getFixtureContent('magento_14_to_15_expected_schemaup.sql',__FILE__);
+
+		$schemaFactory		= new Domain_Database_Schema_Factory();
+		$schemaMagento14	= $schemaFactory->createFromSql($structureMagento14);
+		$schemaMagento15	= $schemaFactory->createFromSql($structureMagento15);
+
+		$retrievedSchemaUp 	= $this->migrator->setSourceSchema($schemaMagento14)->setTargetSchema($schemaMagento15)->getMigrationStatements();
+
+		$this->assertEquals($expectedSchemaUp, $retrievedSchemaUp,'Expected and retrieved schemaUp are diffrent'); 
 	}
 }

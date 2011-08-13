@@ -118,6 +118,11 @@ class Mocked_Domain_Database_Field_FactoryTestcase extends Mocked_AbstractMocked
 				'expectedDataType' => Domain_Database_Field_Factory::DATATYPE_INT,
 				'expectedDataTypeAlias' => 'integer'
 			),
+			array(
+				'createFieldSql' => "`price_type` enum('fixed','percent') NOT NULL DEFAULT 'fixed'",
+				'expectedDataType' 	=> Domain_Database_Field_Factory::DATATYPE_ENUM,
+				'expectedDataTypeAlias' => 'enum'
+			)
 		);
 	}
 	

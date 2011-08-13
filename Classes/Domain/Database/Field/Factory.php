@@ -33,7 +33,8 @@ class Domain_Database_Field_Factory extends Domain_Database_AbstractSqlParsingFa
 	const DATATYPE_TIMESTAMP	= 'timestamp';
 	const DATATYPE_DATE			= 'date';
 	const DATATYPE_DATETIME		= 'datetime';
-	
+
+	const DATATYPE_CHAR			= 'char';
 	const DATATYPE_VARCHAR		= 'varchar';
 	
 	const DATATYPE_TINYBLOB		= 'tinyblob';
@@ -46,7 +47,9 @@ class Domain_Database_Field_Factory extends Domain_Database_AbstractSqlParsingFa
 	const DATATYPE_TEXT			= 'text';
 	const DATATYPE_LONGTEXT		= 'longtext';
 	
-	
+	const DATATYPE_ENUM			= 'enum';
+	const DATATYPE_SET			= 'set';
+
 	protected $dataTypeAliases = array(
 		self::DATATYPE_BIT 			=> array('bit'),
 		self::DATATYPE_BOOL 		=> array('bool','boolean'),
@@ -61,6 +64,7 @@ class Domain_Database_Field_Factory extends Domain_Database_AbstractSqlParsingFa
 		self::DATATYPE_TIMESTAMP	=> array('timestamp'),
 		self::DATATYPE_DATE			=> array('date'),
 		self::DATATYPE_DATETIME		=> array('datetime'),
+		self::DATATYPE_CHAR			=> array('char'),
 		self::DATATYPE_VARCHAR		=> array('varchar'),
 		self::DATATYPE_TINYBLOB		=> array('tinyblob'),
 		self::DATATYPE_MEDIUMBLOB	=> array('mediumblob'),
@@ -69,8 +73,9 @@ class Domain_Database_Field_Factory extends Domain_Database_AbstractSqlParsingFa
 		self::DATATYPE_TINYTEXT		=> array('tinytext'),
 		self::DATATYPE_MEDIUMTEXT	=> array('mediumtext'),
 		self::DATATYPE_TEXT			=> array('text'),
-		self::DATATYPE_LONGTEXT		=> array('longtext')
-		
+		self::DATATYPE_LONGTEXT		=> array('longtext'),
+		self::DATATYPE_ENUM			=> array('enum'),
+		self::DATATYPE_SET			=> array('set')
 	);
 		
 	/**
@@ -141,16 +146,45 @@ class Domain_Database_Field_Factory extends Domain_Database_AbstractSqlParsingFa
 			foreach($aliases as $alias) {
 				$matches = array();
 				
-				// `FIELDNAME` DATATYPE(SIZE,PRECISION[options]) followed by at least one space or line end 
-				if(preg_match('~`[^`]*`.*'.$alias.'(\((?<size>[1-9][0-9]*)(,(?<precision>[1-9][0-9]*))?\))?([[:space:]]+.*|$)~ims',$this->sqlString,$matches) === 1) {
+				// `FIELDNAME` DATATYPE(DATATYPE_INFORMATION) followed by at least one space or line end
+				if(preg_match('~`[^`]*`.*'.$alias.'(\((?<datatype_information>[^\)]*)\))?([[:space:]]+.*|$)~ims',$this->sqlString,$matches) === 1) {
 					$field->setDatatype($dataType);
 					$field->setDatatypeAlias($alias);
-					
-					if(is_array($matches) && array_key_exists('size',$matches)) {
-						$size = intval($matches['size']);
-						$field->setSize($size);
+
+					if(array_key_exists('datatype_information', $matches)) {
+						$dataTypeInformation = $matches['datatype_information'];
+
+						//here we parse the datatype information
+						//it can be simply the size
+						switch ($dataType){
+
+							case self::DATATYPE_ENUM:
+							case self::DATATYPE_SET:
+
+							break;
+
+							default:
+								$datatypeInformationMatches = array();
+								$pattern = '~(?<size>[1-9][0-9]*)(,(?<precision>[1-9][0-9]*))?~';
+								if(preg_match($pattern,$dataTypeInformation,$datatypeInformationMatches) > 0) {
+
+									//((?<size>[1-9][0-9]*)(,(?<precision>[1-9][0-9]*))?
+									if(is_array($datatypeInformationMatches) && array_key_exists('size',$datatypeInformationMatches)) {
+										$size = intval($datatypeInformationMatches['size']);
+										$field->setSize($size);
+									}
+
+									if(is_array($datatypeInformationMatches) && array_key_exists('precision',$datatypeInformationMatches)) {
+										$precision = intval($datatypeInformationMatches['precision']);
+										$field->setPrecision($precision);
+									}
+								}
+
+							break;
+						}
+
 					}
-					
+
 					return $this;
 				}
 			}
