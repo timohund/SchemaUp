@@ -106,3 +106,8 @@ CREATE TABLE `xmlconnect_queue` (
   KEY `FK_TEMPLATE_ID` (`template_id`),
   CONSTRAINT `FK_TEMPLATE_ID` FOREIGN KEY (`template_id`) REFERENCES `xmlconnect_notification_template` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE `catalog_product_super_attribute_pricing` MODIFY `pricing_value` decimal(12,4) DEFAULT NULL;
+ALTER TABLE `core_cache_tag` MODIFY `tag` varchar(100) NOT NULL DEFAULT '';
+ALTER TABLE `core_cache_tag` MODIFY `cache_id` varchar(200) NOT NULL DEFAULT '';
+ALTER TABLE `downloadable_link_purchased` MODIFY `order_id` int(10) unsigned DEFAULT '0';
+ALTER TABLE `downloadable_link_purchased_item` MODIFY `order_item_id` int(10) unsigned DEFAULT '0';

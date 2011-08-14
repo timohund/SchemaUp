@@ -63,14 +63,15 @@ class Domain_Database_Visitor_Added extends Domain_Database_Visitor_AbstractMigr
 			case 'Domain_Database_Field_Field':
 				/** @var $targetSchemaObject Domain_Database_Field_Field */
 				$fieldTable = $this->getCurrentTable();
-				if(!array_search($fieldTable->getName(),$this->addedTableNames)) {
+				if(array_search($fieldTable->getName(),$this->addedTableNames) === false) {
 					if($this->sourceSchema->hasTable($fieldTable)) {
 						$sourceTable = $this->sourceSchema->getTable($fieldTable);
 						if(!$sourceTable->hasField($targetSchemaObject)) {
 							$this->migrationStorage->add("ALTER TABLE `".$fieldTable->getName()."` ADD ".$targetSchemaObject->getSql());
 						}
 					} else {
-						//logic exception
+						$message = "The AddedVisitor tried to retrieve an table (".$fieldTable->getName().") from the sourceSchema that was previously processed.";
+						throw new Exception_Visitor_LogicException($message);
 					}
 				}
 			break;

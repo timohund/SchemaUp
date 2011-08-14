@@ -16,7 +16,7 @@
  * @subpackage Classes\Domain\Database\Field
  * @author Timo Schmidt <timo-schmidt@gmx.net>
  */
-class Domain_Database_Field_Field implements Interface_Visitable, Interface_Sqlable{
+class Domain_Database_Field_Field implements Interface_Visitable, Interface_Sqlable, Interface_Comparable{
 	
 	/**
 	 * @var $name string
@@ -49,15 +49,22 @@ class Domain_Database_Field_Field implements Interface_Visitable, Interface_Sqla
 	protected $precision = 0;
 
 	/**
+	 * @var
+	 */
+	protected $notNull = false;
+
+	/**
 	 * @var $sql string holds the sql used for the creation of this element
 	 */
-	protected $sql;
+	protected $sql = '';
 	
 	/**
 	 * @param string
+ 	 * @return Domain_Database_Field_Field
 	 */
 	public function setSql($sql) {
 		$this->sql = $sql;
+		return $this;
 	}
 	
 	/**
@@ -71,9 +78,11 @@ class Domain_Database_Field_Field implements Interface_Visitable, Interface_Sqla
 	 * Method to set the name of the database field.
 	 * 
 	 * @param string $fieldName
+	 * @return Domain_Database_Field_Field
 	 */
 	public function setName($fieldName) {
 		$this->name = $fieldName;
+		return $this;
 	}
 	
 	/**
@@ -89,9 +98,11 @@ class Domain_Database_Field_Field implements Interface_Visitable, Interface_Sqla
 	 * Datatype of the field.
 	 * 
 	 * @param string $string
+	 * @return Domain_Database_Field_Field
 	 */
 	public function setDatatype($dataType) {
 		$this->dataType = $dataType;
+		return $this;
 	}
 	
 	/**
@@ -107,9 +118,11 @@ class Domain_Database_Field_Field implements Interface_Visitable, Interface_Sqla
 	 * The used alias of the data type.
 	 * 
 	 * @param string $dataTypeAlias
+	 * @return Domain_Database_Field_Field
 	 */
 	public function setDatatypeAlias($dataTypeAlias) {
 		$this->dataTypeAlias = $dataTypeAlias;
+		return $this;
 	}
 	
 	/**
@@ -125,9 +138,11 @@ class Domain_Database_Field_Field implements Interface_Visitable, Interface_Sqla
 	 * Method to set the size of the database field.
 	 * 
 	 * @param int $size
+	 * @return Domain_Database_Field_Field
 	 */
 	public function setSize($size) {
 		$this->size = $size;
+		return $this;
 	}
 	
 	/**
@@ -149,12 +164,14 @@ class Domain_Database_Field_Field implements Interface_Visitable, Interface_Sqla
 	}
 	
 	/**
-	 * Method to set if wether the field is an auto increment field or not.
+	 * Method to set if the field is an auto increment field or not.
 	 * 
 	 * @param boolean $bool
+	 * @return Domain_Database_Field_Field
 	 */
 	public function setAutoIncrement($bool = true) {
 		$this->autoIncrement = $bool;
+		return $this;
 	}
 	
 	/**
@@ -170,9 +187,11 @@ class Domain_Database_Field_Field implements Interface_Visitable, Interface_Sqla
 	 * Method to pass the precision of the field.
 	 * 
 	 * @param $precision
+	 * @return Domain_Database_Field_Field
 	 */
 	public function setPrecision($precision) {
 		$this->precision = $precision;
+		return $this;
 	}
 
 	/**
@@ -185,11 +204,54 @@ class Domain_Database_Field_Field implements Interface_Visitable, Interface_Sqla
 	}
 
 	/**
-	 * Implemenation of the visitor interface
+	 * Method to set the not null flag.
+	 * 
+	 * @param bool $notNull
+	 * @return Domain_Database_Field_Field
+	 */
+	public function setNotNull($notNull = true) {
+		$this->notNull = $notNull;
+		return $this;
+	}
+
+	/**
+	 * Returns the state of the notNull flag.
+	 * 
+	 * @return bool
+	 */
+	public function getNotNull() {
+		return $this->notNull;
+	}
+
+	/**
+	 * Implementation of the visitor interface
 	 * 
 	 * @param Interface_Visitor $visitor
 	 */
 	public function visit(Interface_Visitor $visitor) {
 		$visitor->setVisitable($this);
+	}
+
+	/**
+	 * The implementation of this method should
+	 * return true if the object is equals and false if not.
+	 *
+	 * @param object $object
+	 * @param boolean $recursive
+	 * @return boolean
+	 */
+	public function equals($objectToCompare, $recursive = false) {
+		System_ClassHandling_Tools::assertType('Domain_Database_Field_Field',$objectToCompare);
+		$equals = false;
+		/** @var $objectToCompare Domain_Database_Field_Field */
+		$equals = ($this->getAutoIncrement() == $objectToCompare->getAutoIncrement());
+
+		if($equals) { 	$equals = $equals && ($this->getDatatype() == $objectToCompare->getDatatype()); }
+		if($equals) {  	$equals = $equals && ($this->getName() == $objectToCompare->getName()); }
+		if($equals) { 	$equals = $equals && ($this->getPrecision() == $objectToCompare->getPrecision()); }
+		if($equals) { 	$equals = $equals && ($this->getSize() == $objectToCompare->getSize()); }
+		if($equals) {	$equals = $equals && ($this->getNotNull() == $objectToCompare->getNotNull()); }
+
+		return $equals;
 	}
 }

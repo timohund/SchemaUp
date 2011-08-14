@@ -39,9 +39,11 @@ class Domain_Database_Schema_Schema implements Interface_Visitable{
 
 	/**
 	 * @param string $sql
+	 * @return Domain_Database_Schema_Schema
 	 */
 	public function setSql($sql) {
 		$this->sql = $sql;
+		return $this;
 	}
 	
 	/**
@@ -64,6 +66,7 @@ class Domain_Database_Schema_Schema implements Interface_Visitable{
 	 * Method to check if the schema has a table with the passed tablename.
 	 * 
 	 * @param Domain_Database_Table $table
+	 * @return boolean
 	 */
 	public function hasTable(Domain_Database_Table_Table $table) {
 		return $this->getTables()->hasTable($table);

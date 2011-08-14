@@ -16,7 +16,7 @@
  * @subpackage Classes\System
  * @author Timo Schmidt <timo-schmidt@gmx.net>
  */
-class System_Autoloader {
+class System_ClassHandling_Autoloader {
 	
 	/**
 	 * This method is used to register the autoloader itself
@@ -25,7 +25,7 @@ class System_Autoloader {
 	 * @return void
 	 */
 	static function register() {
-		$classLoader = new System_Autoloader();
+		$classLoader = new System_ClassHandling_Autoloader();
 		spl_autoload_register(array($classLoader, 'load'));
 	}
 	
@@ -38,9 +38,8 @@ class System_Autoloader {
 	static public function load($className) {
 		$classNameParts	= explode('_', $className);
 		$pathSegment	= implode('/',$classNameParts);
-		$classPath		= realpath( dirname(__FILE__)).'/../../Classes/'.$pathSegment.'.php';
-		$testPath		= realpath( dirname(__FILE__)).'/../../Tests/'.$pathSegment.'.php';
-		
+		$classPath		= realpath( dirname(__FILE__)).'/../../../Classes/'.$pathSegment.'.php';
+		$testPath		= realpath( dirname(__FILE__)).'/../../../Tests/'.$pathSegment.'.php';
 		if (file_exists($classPath)) {
 			require_once($classPath);
 		} elseif (file_exists($testPath)) {

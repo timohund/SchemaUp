@@ -41,6 +41,11 @@ class Domain_Database_Schema_Migrator{
 	protected $removedVisitor;
 
 	/**
+	 * @var Domain_Database_Visitor_Changed
+	 */
+	protected $changedVisitor;
+
+	/**
 	 * @var Domain_Database_Schema_MigrationStorage
 	 */
 	protected $migrationStorage;
@@ -83,14 +88,22 @@ class Domain_Database_Schema_Migrator{
 		$this->migrationStorage 	= new Domain_Database_Schema_MigrationStorage();
 		$this->addedVisitor 		= new Domain_Database_Visitor_Added();
 		$this->removedVisitor		= new Domain_Database_Visitor_Removed();
-
+		$this->changedVisitor		= new Domain_Database_Visitor_Changed();
+		
 		$this->addedVisitor->setMigrationStorage($this->migrationStorage);
 		$this->addedVisitor->setSourceSchema($this->sourceSchema);
 		$this->targetSchema->visit($this->addedVisitor);
 
+		$this->changedVisitor->setMigrationStorage($this->migrationStorage);
+		$this->changedVisitor->setSourceSchema($this->sourceSchema);
+		$this->targetSchema->visit($this->changedVisitor);
+
+
 		$this->removedVisitor->setMigrationStorage($this->migrationStorage);
 		$this->removedVisitor->setTargetSchema($this->targetSchema);
 		$this->sourceSchema->visit($this->removedVisitor);
+
+
 	}
 	
 	/**

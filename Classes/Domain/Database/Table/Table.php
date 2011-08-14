@@ -36,12 +36,23 @@ class Domain_Database_Table_Table implements Interface_Visitable{
 	 * @var $sql string holds the sql used for the creation of this element
 	 */
 	protected $sql;
-	
+
+	/**
+	 * Constructor.
+	 *
+	 * @return void
+	 */
+	public function __construct() {
+		$this->fields = new Domain_Database_Field_Collection();
+	}
+
 	/**
 	 * @param string
+	 * @return Domain_Database_Table_Table
 	 */
 	public function setSql($sql) {
 		$this->sql = $sql;
+		return $this;
 	}
 	
 	/**
@@ -50,23 +61,16 @@ class Domain_Database_Table_Table implements Interface_Visitable{
 	public function getSql() {
 		return $this->sql;
 	}	
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @return void
-	 */
-	public function __construct() {
-		$this->fields = new Domain_Database_Field_Collection();
-	}
-	
+
 	/**
 	 * Public method to set the name of the table.
 	 * 
 	 * @param string $name
+	 * @return Domain_Database_Table_Table
 	 */
 	public function setName($name) {
 		$this->name = $name;
+		return $this;
 	}
 	
 	/**

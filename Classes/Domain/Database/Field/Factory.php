@@ -105,7 +105,7 @@ class Domain_Database_Field_Factory extends Domain_Database_AbstractSqlParsingFa
 		$field = new Domain_Database_Field_Field();
 		$field->setSql($this->sqlString);
 		
-		$this->extractFieldname($field)->extractDatatype($field)->extractAutoIncrement($field);
+		$this->extractFieldname($field)->extractDatatype($field)->extractAutoIncrement($field)->extractNotNull($field);
 		
 		return $field;
 	}
@@ -205,6 +205,20 @@ class Domain_Database_Field_Factory extends Domain_Database_AbstractSqlParsingFa
 			$field->setAutoIncrement(true);
 		}
 		
+		return $this;
+	}
+
+	/**
+	 * Extract the state of the not null flag.
+	 * 
+	 * @param Domain_Database_Field_Field $field
+	 * @return Domain_Database_Field_Factory
+	 */
+	protected function extractNotNull(Domain_Database_Field_Field $field) {
+		if(preg_match('~.*NOT\s*NULL.*~', $this->sqlString) === 1) {
+			$field->setNotNull(true);
+		}
+
 		return $this;
 	}
 }
